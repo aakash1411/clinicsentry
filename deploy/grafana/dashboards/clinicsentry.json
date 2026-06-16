@@ -1,0 +1,57 @@
+{
+  "uid": "clinicsentry-overview",
+  "title": "ClinicSentry — Overview",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "tags": ["clinicsentry", "healthcare", "compliance"],
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "PHI Detections / minute",
+      "gridPos": {"x": 0, "y": 0, "w": 6, "h": 4},
+      "targets": [
+        {"expr": "rate(clinicsentry_phi_detections_total[1m])", "refId": "A"}
+      ]
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Escalation rate / minute",
+      "gridPos": {"x": 6, "y": 0, "w": 6, "h": 4},
+      "targets": [
+        {"expr": "rate(clinicsentry_escalations_total[1m])", "refId": "A"}
+      ]
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Firewall scan latency (p50, p95, p99)",
+      "gridPos": {"x": 0, "y": 4, "w": 12, "h": 8},
+      "targets": [
+        {"expr": "histogram_quantile(0.5,  sum(rate(clinicsentry_firewall_scan_seconds_bucket[5m])) by (le))", "refId": "p50"},
+        {"expr": "histogram_quantile(0.95, sum(rate(clinicsentry_firewall_scan_seconds_bucket[5m])) by (le))", "refId": "p95"},
+        {"expr": "histogram_quantile(0.99, sum(rate(clinicsentry_firewall_scan_seconds_bucket[5m])) by (le))", "refId": "p99"}
+      ]
+    },
+    {
+      "id": 4,
+      "type": "table",
+      "title": "Escalations by tier",
+      "gridPos": {"x": 12, "y": 0, "w": 12, "h": 12},
+      "targets": [
+        {"expr": "sum(increase(clinicsentry_escalations_total[1h])) by (tier)", "refId": "A", "format": "table"}
+      ]
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Audit chain verification failures",
+      "gridPos": {"x": 0, "y": 12, "w": 24, "h": 6},
+      "targets": [
+        {"expr": "rate(clinicsentry_audit_chain_verify_failures_total[5m])", "refId": "A"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+name: eu_ai_act
+version: "1.0"
+rules:
+  - id: EU-AI-ACT-Art-9-2
+    title: Risk management - continuous monitoring
+    predicate: event_count >= 1
+    severity: blocker
+    references:
+      - EU AI Act Article 9(2)
+  - id: EU-AI-ACT-Art-12-1
+    title: Record-keeping - automatic logging without gaps
+    predicate: no_gaps_in_sequence
+    severity: blocker
+    references:
+      - EU AI Act Article 12(1)
+  - id: EU-AI-ACT-Art-14-1
+    title: Human oversight - advisory escalations reviewed
+    predicate: human_review_for_advisory
+    severity: warning
+    references:
+      - EU AI Act Article 14(1)

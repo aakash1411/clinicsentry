@@ -1,0 +1,248 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "clinicsentry"
+version = "0.3.0"
+description = "Framework-agnostic compliance middleware for clinical AI agents (HIPAA, FDA TPLC, IEC 62304)."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [{ name = "ClinicSentry Contributors" }]
+keywords = ["healthcare", "hipaa", "fda", "samd", "iec62304", "agents", "llm", "guardrails"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Healthcare Industry",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Security",
+    "Typing :: Typed",
+]
+dependencies = [
+    "pydantic>=2.0",
+    "PyYAML>=6.0",
+    "cryptography>=41.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/aakash1411/clinicsentry"
+Repository = "https://github.com/aakash1411/clinicsentry"
+Documentation = "https://github.com/aakash1411/clinicsentry/tree/main/docs"
+Changelog = "https://github.com/aakash1411/clinicsentry/blob/main/CHANGELOG.md"
+Issues = "https://github.com/aakash1411/clinicsentry/issues"
+
+[project.optional-dependencies]
+phi = [
+    "presidio-analyzer>=2.2",
+    "presidio-anonymizer>=2.2",
+]
+fhir = ["fhir.resources>=7.0"]
+hl7 = ["hl7apy>=1.3"]
+dicom = ["pydicom>=2.4"]
+langgraph = ["langgraph>=0.2", "langchain-core>=0.3"]
+crewai = ["crewai>=0.80"]
+adk = ["google-adk>=0.1"]
+openai-agents = ["openai-agents>=0.1"]
+claude = ["anthropic>=0.40"]
+mcp = ["mcp>=0.9"]
+postgres = ["sqlalchemy>=2.0", "asyncpg>=0.29", "alembic>=1.13"]
+s3 = ["boto3>=1.34"]
+otel = [
+    "opentelemetry-api>=1.27",
+    "opentelemetry-sdk>=1.27",
+    "opentelemetry-exporter-otlp>=1.27",
+]
+metrics = ["prometheus-client>=0.20"]
+hsm = ["python-pkcs11>=0.7"]
+cloud-kms = [
+    "boto3>=1.34",
+    "google-cloud-kms>=2.20",
+    "azure-keyvault-keys>=4.8",
+    "azure-identity>=1.15",
+]
+nlp-medical = ["scispacy>=0.5", "spacy>=3.7"]
+ocr = ["pytesseract>=0.3"]
+dashboard = ["fastapi>=0.110", "uvicorn>=0.27", "jinja2>=3.1"]
+pdf = ["weasyprint>=60.0"]
+docs = ["mkdocs-material>=9.5", "mkdocstrings[python]>=0.24"]
+test = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "pytest-cov>=4.1",
+    "hypothesis>=6.100",
+    "freezegun>=1.4",
+    "respx>=0.20",
+]
+dev = [
+    "ruff>=0.4",
+    "mypy>=1.10",
+    "pre-commit>=3.7",
+    "pip-licenses>=4.4",
+    "mutmut>=2.5,<3.0",
+    "testcontainers[postgres]>=4.0",
+    "pip-audit>=2.7",
+    "bandit>=1.7",
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "pytest-cov>=4.1",
+    "hypothesis>=6.100",
+    "freezegun>=1.4",
+    "respx>=0.20",
+]
+all = [
+    "presidio-analyzer>=2.2",
+    "presidio-anonymizer>=2.2",
+    "fhir.resources>=7.0",
+    "hl7apy>=1.3",
+    "pydicom>=2.4",
+    "opentelemetry-api>=1.27",
+    "opentelemetry-sdk>=1.27",
+    "prometheus-client>=0.20",
+]
+
+[project.scripts]
+clinicsentry = "clinicsentry.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/clinicsentry"]
+force-include = {"src/clinicsentry/audit/migrations/alembic.ini" = "clinicsentry/audit/migrations/alembic.ini", "src/clinicsentry/audit/migrations/script.py.mako" = "clinicsentry/audit/migrations/script.py.mako"}
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = [
+    "unit: fast, pure, no I/O",
+    "integration: crosses module boundaries with real backend",
+    "adapter: requires a framework SDK; auto-skipped if missing",
+    "slow: > 1 second; excluded from inner loop",
+    "regulatory: maps to a specific regulatory requirement",
+    "property: hypothesis property test",
+    "mutation_target: prioritized by mutmut",
+]
+addopts = "-ra --strict-markers"
+
+[tool.coverage.run]
+source = ["src/clinicsentry"]
+branch = true
+omit = [
+    "*/cli.py",
+    "*/dashboard/*",
+    "*/audit/postgres.py",
+    "*/audit/s3.py",
+    "*/audit/pdf_report.py",
+    "*/phi/medical_ner.py",
+    "*/phi/multilingual.py",
+    "*/phi/ocr.py",
+    "*/meddevice/keys.py",
+    "*/meddevice/clinician_auth.py",
+    "*/observability/*",
+    "*/adapters/openai_agents.py",
+    "*/adapters/claude_sdk.py",
+    "*/adapters/crewai.py",
+    "*/adapters/google_adk.py",
+    "*/adapters/langgraph.py",
+    "*/adapters/mcp_proxy.py",
+    "*/performance.py",
+]
+
+[tool.coverage.report]
+# 75% on the core modules; novelty modules (propagation/confidence/chain/meddevice)
+# are individually verified by their dedicated test files. Optional / heavy-dep
+# modules are omitted (see omit list above).
+fail_under = 75
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E", "F", "W",   # pycodestyle + pyflakes
+    "I",             # isort
+    "B",             # flake8-bugbear
+    "UP",            # pyupgrade
+    "SIM",           # flake8-simplify
+    "C4",            # flake8-comprehensions
+    "RET",           # flake8-return
+    "PT",            # pytest style
+    "TID",           # tidy imports
+    "D",             # pydocstyle
+]
+ignore = [
+    "D203",  # one-blank-line-before-class conflicts with D211
+    "D213",  # multi-line-summary-second-line conflicts with D212
+    "D107",  # missing docstring on __init__
+    "D105",  # missing docstring in dunder method (implementation detail)
+    "D104",  # missing docstring in public package
+    "E501",  # line too long handled by formatter
+    "UP042", # str+Enum preferred over StrEnum for serialization stability
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D", "PT011", "S101"]
+"examples/**" = ["D"]
+"_tmp/**" = ["D"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unreachable = true
+disallow_untyped_decorators = false  # allow @dataclass / @pytest.fixture
+files = ["src/clinicsentry"]
+
+[[tool.mypy.overrides]]
+module = [
+    "presidio_analyzer.*",
+    "pydicom.*",
+    "sqlalchemy.*",
+    "fastapi.*",
+    "fastapi",
+    "langgraph.*",
+    "langchain_core.*",
+    "crewai.*",
+    "weasyprint.*",
+    "pkcs11.*",
+    "mcp.*",
+    "agents.*",
+    "google.*",
+    "anthropic.*",
+    "boto3.*",
+    "botocore.*",
+    "opentelemetry.*",
+    "pytesseract.*",
+    "PIL.*",
+    "spacy.*",
+    "structlog.*",
+    "prometheus_client.*",
+    "yaml",
+    "azure.*",
+    "google.cloud.*",
+    "alembic.*",
+]
+ignore_missing_imports = true
+
+[tool.mutmut]
+paths_to_mutate = "src/clinicsentry/"
+tests_dir = "tests/"
+runner = "pytest -x -q"

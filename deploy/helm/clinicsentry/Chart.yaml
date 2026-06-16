@@ -1,0 +1,16 @@
+apiVersion: v2
+name: clinicsentry
+description: Compliance middleware for clinical AI agents (HIPAA, FDA TPLC, IEC 62304).
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - healthcare
+  - hipaa
+  - fda
+  - compliance
+  - llm
+  - agents
+home: https://github.com/aakash1411/clinicsentry
+maintainers:
+  - name: ClinicSentry Contributors

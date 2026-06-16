@@ -1,0 +1,61 @@
+image:
+  repository: clinicsentry
+  tag: latest
+  pullPolicy: IfNotPresent
+
+replicaCount: 2
+
+resources:
+  requests: { cpu: "100m", memory: "256Mi" }
+  limits:   { cpu: "1",    memory: "1Gi"   }
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: false
+  className: nginx
+  hosts: []
+  tls: []
+
+env:
+  CLINICSENTRY_AUDIT__BACKEND: postgres
+  OTEL_SERVICE_NAME: clinicsentry
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
+
+# Secrets are loaded from ExternalSecrets (AWS Secrets Manager / GCP Secret Manager).
+externalSecrets:
+  enabled: true
+  name: clinicsentry-secrets
+  refreshInterval: 1h
+  remoteRefs:
+    - secretKey: CLINICSENTRY_HMAC_KEY
+      remoteRef:
+        key: clinicsentry/hmac
+    - secretKey: CLINICSENTRY_AUDIT__PATH
+      remoteRef:
+        key: clinicsentry/postgres-dsn
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ["ALL"]
+
+networkPolicy:
+  enabled: true
+  allowedNamespaces: []

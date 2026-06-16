@@ -1,0 +1,80 @@
+site_name: ClinicSentry
+site_description: Compliance middleware for clinical AI agents (HIPAA, FDA TPLC, IEC 62304).
+site_author: ClinicSentry Contributors
+repo_url: https://github.com/aakash1411/clinicsentry
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - content.code.copy
+    - content.action.edit
+    - search.highlight
+  palette:
+    - scheme: default
+      primary: blue
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: blue
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+nav:
+  - Home: index.md
+  - Quickstart: quickstart.md
+  - Concepts:
+      - PHI Firewall: concepts/phi-firewall.md
+      - Escalation Router: concepts/escalation-router.md
+      - Audit Trail: concepts/audit-trail.md
+      - MedDevice Mode: concepts/meddevice-mode.md
+  - Adapters: adapters.md
+  - Policy Reference: policy.md
+  - Regulatory Mapping: regulatory-mapping.md
+  - Tutorials:
+      - LangGraph: tutorials/langgraph.md
+      - CrewAI: tutorials/crewai.md
+      - Google ADK: tutorials/adk.md
+      - OpenAI Agents: tutorials/openai-agents.md
+      - Claude SDK: tutorials/claude.md
+      - MCP Proxy: tutorials/mcp.md
+      - A2A: tutorials/a2a.md
+      - Production deployment: tutorials/production.md
+  - API Reference: api.md
+  - ADRs: adr/README.md
+  - Threat Model: threat-model.md
+  - Responsible Use: responsible-use.md
+  - Changelog: changelog.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: google
+            show_root_heading: true
+            show_source: false
+            members_order: source
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - tables
+  - attr_list

@@ -1,0 +1,111 @@
+## Local development stack: PostgreSQL audit + MinIO (S3) + OTEL collector +
+## Prometheus + Grafana + ClinicSentry CLI demo.
+##
+## Bring up:   docker compose -f deploy/compose/docker-compose.yml up
+## Tear down:  docker compose -f deploy/compose/docker-compose.yml down -v
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: clinicsentry
+      POSTGRES_USER: cg
+      POSTGRES_PASSWORD: cg-dev-password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cg"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: cg-dev
+      MINIO_ROOT_PASSWORD: cg-dev-password
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - miniodata:/data
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.103.0
+    command: ["--config=/etc/otel/config.yaml"]
+    volumes:
+      - ./otel-collector.yaml:/etc/otel/config.yaml:ro
+    ports:
+      - "4317:4317"  # OTLP gRPC
+      - "4318:4318"  # OTLP HTTP
+      - "8889:8889"  # Prometheus scrape endpoint
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      - otel-collector
+
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafanadata:/var/lib/grafana
+      - ../grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - ../grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - prometheus
+
+  clinicsentry:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    image: clinicsentry:latest
+    environment:
+      CLINICSENTRY_HMAC_KEY: "ZGV2LWtleS1mb3ItbG9jYWwtdGVzdGluZy1vbmx5MTIzNDU2Nzg5MA=="
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
+      OTEL_SERVICE_NAME: "clinicsentry"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+    command: ["demo", "--audit-path", "/data/audit.sqlite"]
+    volumes:
+      - dashdata:/data
+
+  dashboard:
+    image: clinicsentry:latest
+    depends_on:
+      clinicsentry:
+        condition: service_completed_successfully
+    environment:
+      CLINICSENTRY_AUDIT_PATH: "/data/audit.sqlite"
+    ports:
+      - "8080:8080"
+    entrypoint: ["python", "-m", "uvicorn"]
+    command:
+      - "clinicsentry.dashboard.app:create_app"
+      - "--factory"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8080"
+    volumes:
+      - dashdata:/data
+
+volumes:
+  pgdata:
+  miniodata:
+  grafanadata:
+  dashdata:

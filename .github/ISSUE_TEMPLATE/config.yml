@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security vulnerability (private)
+    url: https://github.com/aakash1411/clinicsentry/security/advisories/new
+    about: PHI-detection bypasses and other vulnerabilities — never file these as public issues.

@@ -1,0 +1,21 @@
+name: iec62304
+version: "1.0"
+rules:
+  - id: IEC-62304-5.1
+    title: Software development planning - traceability via agent identification
+    predicate: every_event.has(agent_id)
+    severity: blocker
+    references:
+      - IEC 62304:2006+A1:2015 §5.1
+  - id: IEC-62304-8
+    title: Software configuration management - chain integrity
+    predicate: chain_verifies
+    severity: blocker
+    references:
+      - IEC 62304:2006+A1:2015 §8
+  - id: IEC-62304-9
+    title: Problem resolution - interventional actions escalated
+    predicate: escalation_triggered_for_interventional
+    severity: blocker
+    references:
+      - IEC 62304:2006+A1:2015 §9

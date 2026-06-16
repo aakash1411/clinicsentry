@@ -1,0 +1,2352 @@
+[
+  {
+    "text": "Patient Briar Van Halen (DOB: 1980-11-25) presented on March 12, 2024 for follow-up of essential hypertension. MRN: 39345092. Contact: 304-892-8935, briarvanhalen@example.com. SSN on file: 532-14-1488. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 23,
+        "value": "Briar Van Halen"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 30,
+        "end": 40,
+        "value": "1980-11-25"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 55,
+        "end": 69,
+        "value": "March 12, 2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 116,
+        "end": 124,
+        "value": "39345092"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 135,
+        "end": 147,
+        "value": "304-892-8935"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 149,
+        "end": 174,
+        "value": "briarvanhalen@example.com"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 189,
+        "end": 200,
+        "value": "532-14-1488"
+      }
+    ]
+  },
+  {
+    "text": "Patient Avery Smith-Jones (DOB: 06/05/2000) presented on December 9, 2024 for follow-up of atrial fibrillation. MRN: 59979283. Contact: (298) 664-9810, averysmithjones@demo.org. SSN on file: 119-75-8084. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 25,
+        "value": "Avery Smith-Jones"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 32,
+        "end": 42,
+        "value": "06/05/2000"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 57,
+        "end": 73,
+        "value": "December 9, 2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 117,
+        "end": 125,
+        "value": "59979283"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 136,
+        "end": 150,
+        "value": "(298) 664-9810"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 152,
+        "end": 176,
+        "value": "averysmithjones@demo.org"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 191,
+        "end": 202,
+        "value": "119-75-8084"
+      }
+    ]
+  },
+  {
+    "text": "Patient Gale Blake (DOB: 10/12/1974) presented on 04/25/2024 for follow-up of chronic kidney disease, stage 3. MRN: 50665627. Contact: +1 229-430-1911, galeblake@demo.org. SSN on file: 109-22-3567. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 18,
+        "value": "Gale Blake"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 25,
+        "end": 35,
+        "value": "10/12/1974"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 50,
+        "end": 60,
+        "value": "04/25/2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 116,
+        "end": 124,
+        "value": "50665627"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 135,
+        "end": 150,
+        "value": "+1 229-430-1911"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 152,
+        "end": 170,
+        "value": "galeblake@demo.org"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 185,
+        "end": 196,
+        "value": "109-22-3567"
+      }
+    ]
+  },
+  {
+    "text": "Patient Ellis Ellis (DOB: 04/12/1966) presented on 2024-06-22 for follow-up of type 2 diabetes mellitus. MRN: 97148117. Contact: 274-695-0180, ellisellis@demo.org. SSN on file: 390-25-6096. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 19,
+        "value": "Ellis Ellis"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 26,
+        "end": 36,
+        "value": "04/12/1966"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 51,
+        "end": 61,
+        "value": "2024-06-22"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 110,
+        "end": 118,
+        "value": "97148117"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 129,
+        "end": 141,
+        "value": "274-695-0180"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 143,
+        "end": 162,
+        "value": "ellisellis@demo.org"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 177,
+        "end": 188,
+        "value": "390-25-6096"
+      }
+    ]
+  },
+  {
+    "text": "Patient Briar Jordan (DOB: 2011-08-02) presented on November 20, 2024 for follow-up of type 2 diabetes mellitus. MRN: 17309270. Contact: 355-797-8815, briarjordan@demo.org. SSN on file: 131-18-6244. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 20,
+        "value": "Briar Jordan"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 27,
+        "end": 37,
+        "value": "2011-08-02"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 52,
+        "end": 69,
+        "value": "November 20, 2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 118,
+        "end": 126,
+        "value": "17309270"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 137,
+        "end": 149,
+        "value": "355-797-8815"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 151,
+        "end": 171,
+        "value": "briarjordan@demo.org"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 186,
+        "end": 197,
+        "value": "131-18-6244"
+      }
+    ]
+  },
+  {
+    "text": "Patient Finley Mc'Cartney (DOB: 02/20/2010) presented on May 11, 2024 for follow-up of atrial fibrillation. MRN: 74632919. Contact: (595) 601-0670, finleymccartney@synthetic.test. SSN on file: 124-23-1010. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 25,
+        "value": "Finley Mc'Cartney"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 32,
+        "end": 42,
+        "value": "02/20/2010"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 57,
+        "end": 69,
+        "value": "May 11, 2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 113,
+        "end": 121,
+        "value": "74632919"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 132,
+        "end": 146,
+        "value": "(595) 601-0670"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 148,
+        "end": 178,
+        "value": "finleymccartney@synthetic.test"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 193,
+        "end": 204,
+        "value": "124-23-1010"
+      }
+    ]
+  },
+  {
+    "text": "Patient Iris Ives (DOB: 11/28/2006) presented on 2024-09-15 for follow-up of essential hypertension. MRN: 97149779. Contact: 931-980-7141, irisives@synthetic.test. SSN on file: 258-94-2761. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 17,
+        "value": "Iris Ives"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 24,
+        "end": 34,
+        "value": "11/28/2006"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 49,
+        "end": 59,
+        "value": "2024-09-15"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 106,
+        "end": 114,
+        "value": "97149779"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 125,
+        "end": 137,
+        "value": "931-980-7141"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 139,
+        "end": 162,
+        "value": "irisives@synthetic.test"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 177,
+        "end": 188,
+        "value": "258-94-2761"
+      }
+    ]
+  },
+  {
+    "text": "Patient Briar Blake (DOB: December 15, 1987) presented on 2024-09-18 for follow-up of atrial fibrillation. MRN: 39416391. Contact: 896-245-4520, briarblake@demo.org. SSN on file: 565-15-9947. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 19,
+        "value": "Briar Blake"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 26,
+        "end": 43,
+        "value": "December 15, 1987"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 58,
+        "end": 68,
+        "value": "2024-09-18"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 112,
+        "end": 120,
+        "value": "39416391"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 131,
+        "end": 143,
+        "value": "896-245-4520"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 145,
+        "end": 164,
+        "value": "briarblake@demo.org"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 179,
+        "end": 190,
+        "value": "565-15-9947"
+      }
+    ]
+  },
+  {
+    "text": "Patient Harper Frost (DOB: 2016-02-12) presented on 12/20/2024 for follow-up of type 2 diabetes mellitus. MRN: 56597503. Contact: +1 985-537-1395, harperfrost@example.com. SSN on file: 424-38-2396. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 20,
+        "value": "Harper Frost"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 27,
+        "end": 37,
+        "value": "2016-02-12"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 52,
+        "end": 62,
+        "value": "12/20/2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 111,
+        "end": 119,
+        "value": "56597503"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 130,
+        "end": 145,
+        "value": "+1 985-537-1395"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 147,
+        "end": 170,
+        "value": "harperfrost@example.com"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 185,
+        "end": 196,
+        "value": "424-38-2396"
+      }
+    ]
+  },
+  {
+    "text": "Patient Devon Ives (DOB: 1973-06-17) presented on April 28, 2024 for follow-up of asthma. MRN: 98669932. Contact: (461) 606-8983, devonives@demo.org. SSN on file: 661-77-6610. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 18,
+        "value": "Devon Ives"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 25,
+        "end": 35,
+        "value": "1973-06-17"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 50,
+        "end": 64,
+        "value": "April 28, 2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 95,
+        "end": 103,
+        "value": "98669932"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 114,
+        "end": 128,
+        "value": "(461) 606-8983"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 130,
+        "end": 148,
+        "value": "devonives@demo.org"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 163,
+        "end": 174,
+        "value": "661-77-6610"
+      }
+    ]
+  },
+  {
+    "text": "Patient Ellis Mc'Cartney (DOB: 03/20/1992) presented on 2024-01-18 for follow-up of chronic kidney disease, stage 3. MRN: 83032616. Contact: (362) 622-3000, ellismccartney@example.com. SSN on file: 550-90-1018. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 24,
+        "value": "Ellis Mc'Cartney"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 31,
+        "end": 41,
+        "value": "03/20/1992"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 56,
+        "end": 66,
+        "value": "2024-01-18"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 122,
+        "end": 130,
+        "value": "83032616"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 141,
+        "end": 155,
+        "value": "(362) 622-3000"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 157,
+        "end": 183,
+        "value": "ellismccartney@example.com"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 198,
+        "end": 209,
+        "value": "550-90-1018"
+      }
+    ]
+  },
+  {
+    "text": "Patient Jordan Dunn (DOB: November 20, 1999) presented on 12/30/2024 for follow-up of essential hypertension. MRN: 56138964. Contact: +1 935-733-5909, jordandunn@example.com. SSN on file: 565-13-1602. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 19,
+        "value": "Jordan Dunn"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 26,
+        "end": 43,
+        "value": "November 20, 1999"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 58,
+        "end": 68,
+        "value": "12/30/2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 115,
+        "end": 123,
+        "value": "56138964"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 134,
+        "end": 149,
+        "value": "+1 935-733-5909"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 151,
+        "end": 173,
+        "value": "jordandunn@example.com"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 188,
+        "end": 199,
+        "value": "565-13-1602"
+      }
+    ]
+  },
+  {
+    "text": "Patient Casey Ellis (DOB: 04/07/2002) presented on 2024-07-13 for follow-up of atrial fibrillation. MRN: 76526974. Contact: +1 657-537-9459, caseyellis@example.com. SSN on file: 491-36-4277. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 19,
+        "value": "Casey Ellis"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 26,
+        "end": 36,
+        "value": "04/07/2002"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 51,
+        "end": 61,
+        "value": "2024-07-13"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 105,
+        "end": 113,
+        "value": "76526974"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 124,
+        "end": 139,
+        "value": "+1 657-537-9459"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 141,
+        "end": 163,
+        "value": "caseyellis@example.com"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 178,
+        "end": 189,
+        "value": "491-36-4277"
+      }
+    ]
+  },
+  {
+    "text": "Patient Briar Dunn (DOB: May 21, 1972) presented on 2024-06-03 for follow-up of chronic kidney disease, stage 3. MRN: 61719420. Contact: 965-388-4946, briardunn@demo.org. SSN on file: 460-94-8732. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 18,
+        "value": "Briar Dunn"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 25,
+        "end": 37,
+        "value": "May 21, 1972"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 52,
+        "end": 62,
+        "value": "2024-06-03"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 118,
+        "end": 126,
+        "value": "61719420"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 137,
+        "end": 149,
+        "value": "965-388-4946"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 151,
+        "end": 169,
+        "value": "briardunn@demo.org"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 184,
+        "end": 195,
+        "value": "460-94-8732"
+      }
+    ]
+  },
+  {
+    "text": "Patient Iris Van Halen (DOB: 08/16/2007) presented on 2024-12-28 for follow-up of essential hypertension. MRN: 86870002. Contact: (296) 583-1109, irisvanhalen@example.com. SSN on file: 361-83-4395. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 22,
+        "value": "Iris Van Halen"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 29,
+        "end": 39,
+        "value": "08/16/2007"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 54,
+        "end": 64,
+        "value": "2024-12-28"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 111,
+        "end": 119,
+        "value": "86870002"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 130,
+        "end": 144,
+        "value": "(296) 583-1109"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 146,
+        "end": 170,
+        "value": "irisvanhalen@example.com"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 185,
+        "end": 196,
+        "value": "361-83-4395"
+      }
+    ]
+  },
+  {
+    "text": "Patient Avery Jordan (DOB: 1960-08-30) presented on 09/20/2024 for follow-up of asthma. MRN: 91113895. Contact: +1 688-497-7160, averyjordan@demo.org. SSN on file: 487-12-3708. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 20,
+        "value": "Avery Jordan"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 27,
+        "end": 37,
+        "value": "1960-08-30"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 52,
+        "end": 62,
+        "value": "09/20/2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 93,
+        "end": 101,
+        "value": "91113895"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 112,
+        "end": 127,
+        "value": "+1 688-497-7160"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 129,
+        "end": 149,
+        "value": "averyjordan@demo.org"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 164,
+        "end": 175,
+        "value": "487-12-3708"
+      }
+    ]
+  },
+  {
+    "text": "Patient Jordan Smith-Jones (DOB: 1962-08-18) presented on 08/18/2024 for follow-up of essential hypertension. MRN: 75719427. Contact: (561) 494-4264, jordansmithjones@example.com. SSN on file: 529-46-2713. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 26,
+        "value": "Jordan Smith-Jones"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 33,
+        "end": 43,
+        "value": "1962-08-18"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 58,
+        "end": 68,
+        "value": "08/18/2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 115,
+        "end": 123,
+        "value": "75719427"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 134,
+        "end": 148,
+        "value": "(561) 494-4264"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 150,
+        "end": 178,
+        "value": "jordansmithjones@example.com"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 193,
+        "end": 204,
+        "value": "529-46-2713"
+      }
+    ]
+  },
+  {
+    "text": "Patient Devon Mc'Cartney (DOB: 1960-12-21) presented on June 2, 2024 for follow-up of atrial fibrillation. MRN: 31107769. Contact: (223) 896-0173, devonmccartney@synthetic.test. SSN on file: 487-72-9782. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 24,
+        "value": "Devon Mc'Cartney"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 31,
+        "end": 41,
+        "value": "1960-12-21"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 56,
+        "end": 68,
+        "value": "June 2, 2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 112,
+        "end": 120,
+        "value": "31107769"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 131,
+        "end": 145,
+        "value": "(223) 896-0173"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 147,
+        "end": 176,
+        "value": "devonmccartney@synthetic.test"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 191,
+        "end": 202,
+        "value": "487-72-9782"
+      }
+    ]
+  },
+  {
+    "text": "Patient Ellis Smith-Jones (DOB: 1982-10-05) presented on 09/04/2024 for follow-up of type 2 diabetes mellitus. MRN: 42135665. Contact: +1 540-242-1510, ellissmithjones@example.com. SSN on file: 289-29-7388. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 25,
+        "value": "Ellis Smith-Jones"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 32,
+        "end": 42,
+        "value": "1982-10-05"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 57,
+        "end": 67,
+        "value": "09/04/2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 116,
+        "end": 124,
+        "value": "42135665"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 135,
+        "end": 150,
+        "value": "+1 540-242-1510"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 152,
+        "end": 179,
+        "value": "ellissmithjones@example.com"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 194,
+        "end": 205,
+        "value": "289-29-7388"
+      }
+    ]
+  },
+  {
+    "text": "Patient Harper Smith-Jones (DOB: 09/11/1987) presented on June 13, 2024 for follow-up of asthma. MRN: 32493318. Contact: (228) 697-5856, harpersmithjones@synthetic.test. SSN on file: 166-61-8558. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 26,
+        "value": "Harper Smith-Jones"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 33,
+        "end": 43,
+        "value": "09/11/1987"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 58,
+        "end": 71,
+        "value": "June 13, 2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 102,
+        "end": 110,
+        "value": "32493318"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 121,
+        "end": 135,
+        "value": "(228) 697-5856"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 137,
+        "end": 168,
+        "value": "harpersmithjones@synthetic.test"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 183,
+        "end": 194,
+        "value": "166-61-8558"
+      }
+    ]
+  },
+  {
+    "text": "Patient Jordan Smith-Jones (DOB: 08/16/2000) presented on 12/09/2024 for follow-up of chronic kidney disease, stage 3. MRN: 14059526. Contact: 375-720-3065, jordansmithjones@example.com. SSN on file: 107-43-3812. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 26,
+        "value": "Jordan Smith-Jones"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 33,
+        "end": 43,
+        "value": "08/16/2000"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 58,
+        "end": 68,
+        "value": "12/09/2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 124,
+        "end": 132,
+        "value": "14059526"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 143,
+        "end": 155,
+        "value": "375-720-3065"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 157,
+        "end": 185,
+        "value": "jordansmithjones@example.com"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 200,
+        "end": 211,
+        "value": "107-43-3812"
+      }
+    ]
+  },
+  {
+    "text": "Patient Harper Ellis (DOB: May 19, 2002) presented on 02/14/2024 for follow-up of atrial fibrillation. MRN: 51197681. Contact: +1 967-280-1235, harperellis@demo.org. SSN on file: 307-47-2211. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 20,
+        "value": "Harper Ellis"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 27,
+        "end": 39,
+        "value": "May 19, 2002"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 54,
+        "end": 64,
+        "value": "02/14/2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 108,
+        "end": 116,
+        "value": "51197681"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 127,
+        "end": 142,
+        "value": "+1 967-280-1235"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 144,
+        "end": 164,
+        "value": "harperellis@demo.org"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 179,
+        "end": 190,
+        "value": "307-47-2211"
+      }
+    ]
+  },
+  {
+    "text": "Patient Harper Mc'Cartney (DOB: January 12, 2007) presented on 2024-01-09 for follow-up of type 2 diabetes mellitus. MRN: 36609999. Contact: +1 475-921-3299, harpermccartney@synthetic.test. SSN on file: 250-20-7827. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 25,
+        "value": "Harper Mc'Cartney"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 32,
+        "end": 48,
+        "value": "January 12, 2007"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 63,
+        "end": 73,
+        "value": "2024-01-09"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 122,
+        "end": 130,
+        "value": "36609999"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 141,
+        "end": 156,
+        "value": "+1 475-921-3299"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 158,
+        "end": 188,
+        "value": "harpermccartney@synthetic.test"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 203,
+        "end": 214,
+        "value": "250-20-7827"
+      }
+    ]
+  },
+  {
+    "text": "Patient Gale Smith-Jones (DOB: 09/29/1998) presented on 09/27/2024 for follow-up of chronic kidney disease, stage 3. MRN: 36418302. Contact: 764-547-7151, galesmithjones@synthetic.test. SSN on file: 173-81-8653. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 24,
+        "value": "Gale Smith-Jones"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 31,
+        "end": 41,
+        "value": "09/29/1998"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 56,
+        "end": 66,
+        "value": "09/27/2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 122,
+        "end": 130,
+        "value": "36418302"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 141,
+        "end": 153,
+        "value": "764-547-7151"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 155,
+        "end": 184,
+        "value": "galesmithjones@synthetic.test"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 199,
+        "end": 210,
+        "value": "173-81-8653"
+      }
+    ]
+  },
+  {
+    "text": "Patient Briar Dunn (DOB: 12/01/1998) presented on May 11, 2024 for follow-up of asthma. MRN: 19328090. Contact: 297-962-8108, briardunn@demo.org. SSN on file: 579-76-3096. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 18,
+        "value": "Briar Dunn"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 25,
+        "end": 35,
+        "value": "12/01/1998"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 50,
+        "end": 62,
+        "value": "May 11, 2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 93,
+        "end": 101,
+        "value": "19328090"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 112,
+        "end": 124,
+        "value": "297-962-8108"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 126,
+        "end": 144,
+        "value": "briardunn@demo.org"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 159,
+        "end": 170,
+        "value": "579-76-3096"
+      }
+    ]
+  },
+  {
+    "text": "Patient Briar Mc'Cartney (DOB: 11/19/2000) presented on May 16, 2024 for follow-up of essential hypertension. MRN: 14695993. Contact: 639-699-4555, briarmccartney@synthetic.test. SSN on file: 140-95-3896. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 24,
+        "value": "Briar Mc'Cartney"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 31,
+        "end": 41,
+        "value": "11/19/2000"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 56,
+        "end": 68,
+        "value": "May 16, 2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 115,
+        "end": 123,
+        "value": "14695993"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 134,
+        "end": 146,
+        "value": "639-699-4555"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 148,
+        "end": 177,
+        "value": "briarmccartney@synthetic.test"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 192,
+        "end": 203,
+        "value": "140-95-3896"
+      }
+    ]
+  },
+  {
+    "text": "Patient Harper Ives (DOB: November 20, 1968) presented on 2024-10-23 for follow-up of type 2 diabetes mellitus. MRN: 84306252. Contact: +1 642-680-4349, harperives@example.com. SSN on file: 437-66-6918. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 19,
+        "value": "Harper Ives"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 26,
+        "end": 43,
+        "value": "November 20, 1968"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 58,
+        "end": 68,
+        "value": "2024-10-23"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 117,
+        "end": 125,
+        "value": "84306252"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 136,
+        "end": 151,
+        "value": "+1 642-680-4349"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 153,
+        "end": 175,
+        "value": "harperives@example.com"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 190,
+        "end": 201,
+        "value": "437-66-6918"
+      }
+    ]
+  },
+  {
+    "text": "Patient Avery Smith-Jones (DOB: November 29, 1964) presented on 06/25/2024 for follow-up of chronic kidney disease, stage 3. MRN: 83580345. Contact: (762) 624-7615, averysmithjones@demo.org. SSN on file: 548-76-6262. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 25,
+        "value": "Avery Smith-Jones"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 32,
+        "end": 49,
+        "value": "November 29, 1964"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 64,
+        "end": 74,
+        "value": "06/25/2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 130,
+        "end": 138,
+        "value": "83580345"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 149,
+        "end": 163,
+        "value": "(762) 624-7615"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 165,
+        "end": 189,
+        "value": "averysmithjones@demo.org"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 204,
+        "end": 215,
+        "value": "548-76-6262"
+      }
+    ]
+  },
+  {
+    "text": "Patient Briar Mc'Cartney (DOB: 1999-04-23) presented on 2024-06-13 for follow-up of type 2 diabetes mellitus. MRN: 97111451. Contact: 358-890-9798, briarmccartney@synthetic.test. SSN on file: 520-58-4844. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 24,
+        "value": "Briar Mc'Cartney"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 31,
+        "end": 41,
+        "value": "1999-04-23"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 56,
+        "end": 66,
+        "value": "2024-06-13"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 115,
+        "end": 123,
+        "value": "97111451"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 134,
+        "end": 146,
+        "value": "358-890-9798"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 148,
+        "end": 177,
+        "value": "briarmccartney@synthetic.test"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 192,
+        "end": 203,
+        "value": "520-58-4844"
+      }
+    ]
+  },
+  {
+    "text": "Patient Finley Adler (DOB: 1982-09-13) presented on 04/12/2024 for follow-up of asthma. MRN: 80696872. Contact: 288-404-8392, finleyadler@demo.org. SSN on file: 298-74-1396. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 20,
+        "value": "Finley Adler"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 27,
+        "end": 37,
+        "value": "1982-09-13"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 52,
+        "end": 62,
+        "value": "04/12/2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 93,
+        "end": 101,
+        "value": "80696872"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 112,
+        "end": 124,
+        "value": "288-404-8392"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 126,
+        "end": 146,
+        "value": "finleyadler@demo.org"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 161,
+        "end": 172,
+        "value": "298-74-1396"
+      }
+    ]
+  },
+  {
+    "text": "Patient Briar Carter (DOB: October 16, 1989) presented on October 5, 2024 for follow-up of type 2 diabetes mellitus. MRN: 95045455. Contact: 583-514-9809, briarcarter@example.com. SSN on file: 451-39-7225. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 20,
+        "value": "Briar Carter"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 27,
+        "end": 43,
+        "value": "October 16, 1989"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 58,
+        "end": 73,
+        "value": "October 5, 2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 122,
+        "end": 130,
+        "value": "95045455"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 141,
+        "end": 153,
+        "value": "583-514-9809"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 155,
+        "end": 178,
+        "value": "briarcarter@example.com"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 193,
+        "end": 204,
+        "value": "451-39-7225"
+      }
+    ]
+  },
+  {
+    "text": "Patient Ellis Mc'Cartney (DOB: 2009-07-17) presented on 08/24/2024 for follow-up of type 2 diabetes mellitus. MRN: 24816903. Contact: (800) 275-7982, ellismccartney@synthetic.test. SSN on file: 630-74-4313. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 24,
+        "value": "Ellis Mc'Cartney"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 31,
+        "end": 41,
+        "value": "2009-07-17"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 56,
+        "end": 66,
+        "value": "08/24/2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 115,
+        "end": 123,
+        "value": "24816903"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 134,
+        "end": 148,
+        "value": "(800) 275-7982"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 150,
+        "end": 179,
+        "value": "ellismccartney@synthetic.test"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 194,
+        "end": 205,
+        "value": "630-74-4313"
+      }
+    ]
+  },
+  {
+    "text": "Patient Jordan Blake (DOB: 1987-07-29) presented on 2024-06-07 for follow-up of asthma. MRN: 32932582. Contact: (421) 559-1967, jordanblake@synthetic.test. SSN on file: 567-77-5552. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 20,
+        "value": "Jordan Blake"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 27,
+        "end": 37,
+        "value": "1987-07-29"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 52,
+        "end": 62,
+        "value": "2024-06-07"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 93,
+        "end": 101,
+        "value": "32932582"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 112,
+        "end": 126,
+        "value": "(421) 559-1967"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 128,
+        "end": 154,
+        "value": "jordanblake@synthetic.test"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 169,
+        "end": 180,
+        "value": "567-77-5552"
+      }
+    ]
+  },
+  {
+    "text": "Patient Harper Holt (DOB: September 1, 1962) presented on September 20, 2024 for follow-up of asthma. MRN: 76643828. Contact: 886-684-5663, harperholt@synthetic.test. SSN on file: 424-20-5115. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 19,
+        "value": "Harper Holt"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 26,
+        "end": 43,
+        "value": "September 1, 1962"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 58,
+        "end": 76,
+        "value": "September 20, 2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 107,
+        "end": 115,
+        "value": "76643828"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 126,
+        "end": 138,
+        "value": "886-684-5663"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 140,
+        "end": 165,
+        "value": "harperholt@synthetic.test"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 180,
+        "end": 191,
+        "value": "424-20-5115"
+      }
+    ]
+  },
+  {
+    "text": "Patient Finley Greene (DOB: 11/17/1976) presented on 01/28/2024 for follow-up of essential hypertension. MRN: 50525473. Contact: (443) 488-4937, finleygreene@synthetic.test. SSN on file: 601-39-2362. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 21,
+        "value": "Finley Greene"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 28,
+        "end": 38,
+        "value": "11/17/1976"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 53,
+        "end": 63,
+        "value": "01/28/2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 110,
+        "end": 118,
+        "value": "50525473"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 129,
+        "end": 143,
+        "value": "(443) 488-4937"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 145,
+        "end": 172,
+        "value": "finleygreene@synthetic.test"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 187,
+        "end": 198,
+        "value": "601-39-2362"
+      }
+    ]
+  },
+  {
+    "text": "Patient Ellis Dunn (DOB: 1976-04-04) presented on 05/29/2024 for follow-up of essential hypertension. MRN: 76726352. Contact: 771-826-3896, ellisdunn@example.com. SSN on file: 612-10-5586. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 18,
+        "value": "Ellis Dunn"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 25,
+        "end": 35,
+        "value": "1976-04-04"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 50,
+        "end": 60,
+        "value": "05/29/2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 107,
+        "end": 115,
+        "value": "76726352"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 126,
+        "end": 138,
+        "value": "771-826-3896"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 140,
+        "end": 161,
+        "value": "ellisdunn@example.com"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 176,
+        "end": 187,
+        "value": "612-10-5586"
+      }
+    ]
+  },
+  {
+    "text": "Patient Devon Van Halen (DOB: 1997-04-13) presented on 2024-12-01 for follow-up of essential hypertension. MRN: 41623720. Contact: +1 867-610-3091, devonvanhalen@example.com. SSN on file: 582-58-9944. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 23,
+        "value": "Devon Van Halen"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 30,
+        "end": 40,
+        "value": "1997-04-13"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 55,
+        "end": 65,
+        "value": "2024-12-01"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 112,
+        "end": 120,
+        "value": "41623720"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 131,
+        "end": 146,
+        "value": "+1 867-610-3091"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 148,
+        "end": 173,
+        "value": "devonvanhalen@example.com"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 188,
+        "end": 199,
+        "value": "582-58-9944"
+      }
+    ]
+  },
+  {
+    "text": "Patient Casey Jordan (DOB: 1973-07-20) presented on May 5, 2024 for follow-up of asthma. MRN: 75911074. Contact: 908-706-2539, caseyjordan@example.com. SSN on file: 459-13-4285. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 20,
+        "value": "Casey Jordan"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 27,
+        "end": 37,
+        "value": "1973-07-20"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 52,
+        "end": 63,
+        "value": "May 5, 2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 94,
+        "end": 102,
+        "value": "75911074"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 113,
+        "end": 125,
+        "value": "908-706-2539"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 127,
+        "end": 150,
+        "value": "caseyjordan@example.com"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 165,
+        "end": 176,
+        "value": "459-13-4285"
+      }
+    ]
+  },
+  {
+    "text": "Patient Ellis Greene (DOB: 01/16/1992) presented on 09/29/2024 for follow-up of essential hypertension. MRN: 42386825. Contact: (583) 225-9012, ellisgreene@synthetic.test. SSN on file: 325-89-1891. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 20,
+        "value": "Ellis Greene"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 27,
+        "end": 37,
+        "value": "01/16/1992"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 52,
+        "end": 62,
+        "value": "09/29/2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 109,
+        "end": 117,
+        "value": "42386825"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 128,
+        "end": 142,
+        "value": "(583) 225-9012"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 144,
+        "end": 170,
+        "value": "ellisgreene@synthetic.test"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 185,
+        "end": 196,
+        "value": "325-89-1891"
+      }
+    ]
+  },
+  {
+    "text": "Patient Iris Frost (DOB: December 27, 2008) presented on 07/15/2024 for follow-up of essential hypertension. MRN: 58035197. Contact: (217) 363-2438, irisfrost@demo.org. SSN on file: 101-50-5729. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 18,
+        "value": "Iris Frost"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 25,
+        "end": 42,
+        "value": "December 27, 2008"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 57,
+        "end": 67,
+        "value": "07/15/2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 114,
+        "end": 122,
+        "value": "58035197"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 133,
+        "end": 147,
+        "value": "(217) 363-2438"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 149,
+        "end": 167,
+        "value": "irisfrost@demo.org"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 182,
+        "end": 193,
+        "value": "101-50-5729"
+      }
+    ]
+  },
+  {
+    "text": "Patient Casey Ives (DOB: 1985-02-20) presented on March 26, 2024 for follow-up of atrial fibrillation. MRN: 51228196. Contact: (466) 360-0546, caseyives@example.com. SSN on file: 582-84-2629. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 18,
+        "value": "Casey Ives"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 25,
+        "end": 35,
+        "value": "1985-02-20"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 50,
+        "end": 64,
+        "value": "March 26, 2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 108,
+        "end": 116,
+        "value": "51228196"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 127,
+        "end": 141,
+        "value": "(466) 360-0546"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 143,
+        "end": 164,
+        "value": "caseyives@example.com"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 179,
+        "end": 190,
+        "value": "582-84-2629"
+      }
+    ]
+  },
+  {
+    "text": "Patient Harper Holt (DOB: 1966-11-21) presented on 2024-07-12 for follow-up of essential hypertension. MRN: 65113372. Contact: 250-865-3476, harperholt@example.com. SSN on file: 278-49-2355. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 19,
+        "value": "Harper Holt"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 26,
+        "end": 36,
+        "value": "1966-11-21"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 51,
+        "end": 61,
+        "value": "2024-07-12"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 108,
+        "end": 116,
+        "value": "65113372"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 127,
+        "end": 139,
+        "value": "250-865-3476"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 141,
+        "end": 163,
+        "value": "harperholt@example.com"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 178,
+        "end": 189,
+        "value": "278-49-2355"
+      }
+    ]
+  },
+  {
+    "text": "Patient Ellis Adler (DOB: 2002-10-24) presented on September 24, 2024 for follow-up of atrial fibrillation. MRN: 45074437. Contact: (526) 401-7541, ellisadler@demo.org. SSN on file: 664-56-3462. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 19,
+        "value": "Ellis Adler"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 26,
+        "end": 36,
+        "value": "2002-10-24"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 51,
+        "end": 69,
+        "value": "September 24, 2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 113,
+        "end": 121,
+        "value": "45074437"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 132,
+        "end": 146,
+        "value": "(526) 401-7541"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 148,
+        "end": 167,
+        "value": "ellisadler@demo.org"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 182,
+        "end": 193,
+        "value": "664-56-3462"
+      }
+    ]
+  },
+  {
+    "text": "Patient Devon Blake (DOB: 1987-09-20) presented on 04/23/2024 for follow-up of essential hypertension. MRN: 82090953. Contact: +1 996-989-5671, devonblake@demo.org. SSN on file: 327-97-7169. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 19,
+        "value": "Devon Blake"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 26,
+        "end": 36,
+        "value": "1987-09-20"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 51,
+        "end": 61,
+        "value": "04/23/2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 108,
+        "end": 116,
+        "value": "82090953"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 127,
+        "end": 142,
+        "value": "+1 996-989-5671"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 144,
+        "end": 163,
+        "value": "devonblake@demo.org"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 178,
+        "end": 189,
+        "value": "327-97-7169"
+      }
+    ]
+  },
+  {
+    "text": "Patient Avery Frost (DOB: 1960-01-04) presented on December 28, 2024 for follow-up of chronic kidney disease, stage 3. MRN: 64898722. Contact: +1 958-846-4975, averyfrost@example.com. SSN on file: 487-23-9281. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 19,
+        "value": "Avery Frost"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 26,
+        "end": 36,
+        "value": "1960-01-04"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 51,
+        "end": 68,
+        "value": "December 28, 2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 124,
+        "end": 132,
+        "value": "64898722"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 143,
+        "end": 158,
+        "value": "+1 958-846-4975"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 160,
+        "end": 182,
+        "value": "averyfrost@example.com"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 197,
+        "end": 208,
+        "value": "487-23-9281"
+      }
+    ]
+  },
+  {
+    "text": "Patient Casey Ives (DOB: 02/06/1968) presented on June 20, 2024 for follow-up of type 2 diabetes mellitus. MRN: 61729942. Contact: +1 756-922-5370, caseyives@synthetic.test. SSN on file: 225-56-1250. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 18,
+        "value": "Casey Ives"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 25,
+        "end": 35,
+        "value": "02/06/1968"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 50,
+        "end": 63,
+        "value": "June 20, 2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 112,
+        "end": 120,
+        "value": "61729942"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 131,
+        "end": 146,
+        "value": "+1 756-922-5370"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 148,
+        "end": 172,
+        "value": "caseyives@synthetic.test"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 187,
+        "end": 198,
+        "value": "225-56-1250"
+      }
+    ]
+  },
+  {
+    "text": "Patient Gale Frost (DOB: July 12, 1975) presented on January 8, 2024 for follow-up of atrial fibrillation. MRN: 28873020. Contact: (986) 913-0128, galefrost@example.com. SSN on file: 575-27-4671. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 18,
+        "value": "Gale Frost"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 25,
+        "end": 38,
+        "value": "July 12, 1975"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 53,
+        "end": 68,
+        "value": "January 8, 2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 112,
+        "end": 120,
+        "value": "28873020"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 131,
+        "end": 145,
+        "value": "(986) 913-0128"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 147,
+        "end": 168,
+        "value": "galefrost@example.com"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 183,
+        "end": 194,
+        "value": "575-27-4671"
+      }
+    ]
+  },
+  {
+    "text": "Patient Briar Ellis (DOB: 07/18/1971) presented on 2024-02-03 for follow-up of type 2 diabetes mellitus. MRN: 93121669. Contact: (626) 542-3444, briarellis@synthetic.test. SSN on file: 442-19-3794. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 19,
+        "value": "Briar Ellis"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 26,
+        "end": 36,
+        "value": "07/18/1971"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 51,
+        "end": 61,
+        "value": "2024-02-03"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 110,
+        "end": 118,
+        "value": "93121669"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 129,
+        "end": 143,
+        "value": "(626) 542-3444"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 145,
+        "end": 170,
+        "value": "briarellis@synthetic.test"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 185,
+        "end": 196,
+        "value": "442-19-3794"
+      }
+    ]
+  },
+  {
+    "text": "Patient Devon Holt (DOB: February 4, 2018) presented on 10/27/2024 for follow-up of type 2 diabetes mellitus. MRN: 59627851. Contact: +1 849-563-7393, devonholt@synthetic.test. SSN on file: 414-43-9001. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 18,
+        "value": "Devon Holt"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 25,
+        "end": 41,
+        "value": "February 4, 2018"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 56,
+        "end": 66,
+        "value": "10/27/2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 115,
+        "end": 123,
+        "value": "59627851"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 134,
+        "end": 149,
+        "value": "+1 849-563-7393"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 151,
+        "end": 175,
+        "value": "devonholt@synthetic.test"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 190,
+        "end": 201,
+        "value": "414-43-9001"
+      }
+    ]
+  },
+  {
+    "text": "Patient Briar Carter (DOB: 01/07/1995) presented on 08/13/2024 for follow-up of type 2 diabetes mellitus. MRN: 61873288. Contact: 669-461-3992, briarcarter@example.com. SSN on file: 479-72-4567. Plan reviewed; no acute distress.",
+    "annotations": [
+      {
+        "phi_type": "NAME",
+        "start": 8,
+        "end": 20,
+        "value": "Briar Carter"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 27,
+        "end": 37,
+        "value": "01/07/1995"
+      },
+      {
+        "phi_type": "DATE",
+        "start": 52,
+        "end": 62,
+        "value": "08/13/2024"
+      },
+      {
+        "phi_type": "MRN",
+        "start": 111,
+        "end": 119,
+        "value": "61873288"
+      },
+      {
+        "phi_type": "PHONE",
+        "start": 130,
+        "end": 142,
+        "value": "669-461-3992"
+      },
+      {
+        "phi_type": "EMAIL",
+        "start": 144,
+        "end": 167,
+        "value": "briarcarter@example.com"
+      },
+      {
+        "phi_type": "SSN",
+        "start": 182,
+        "end": 193,
+        "value": "479-72-4567"
+      }
+    ]
+  }
+]

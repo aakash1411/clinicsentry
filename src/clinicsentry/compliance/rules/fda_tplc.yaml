@@ -1,0 +1,21 @@
+name: fda_tplc
+version: "1.0"
+rules:
+  - id: FDA-TPLC-III-B-1
+    title: Postmarket monitoring data captured
+    predicate: event_count >= 1
+    severity: blocker
+    references:
+      - FDA TPLC 2025 Draft §III.B
+  - id: FDA-TPLC-III-B-2
+    title: Session boundaries captured
+    predicate: session_has_start_and_end
+    severity: warning
+    references:
+      - FDA TPLC 2025 Draft §III.B
+  - id: FDA-TPLC-III-B-3
+    title: No sequence gaps in audit chain
+    predicate: no_gaps_in_sequence
+    severity: blocker
+    references:
+      - FDA TPLC 2025 Draft §III.B

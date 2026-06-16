@@ -1,0 +1,33 @@
+name: hipaa
+version: "1.0"
+rules:
+  - id: HIPAA-164.312-a-1
+    title: Access control - unique user identification
+    predicate: every_event.has(agent_id)
+    severity: blocker
+    references:
+      - 45 CFR §164.312(a)(1)
+  - id: HIPAA-164.312-b
+    title: Audit controls - record activity in information systems
+    predicate: event_count >= 1
+    severity: blocker
+    references:
+      - 45 CFR §164.312(b)
+  - id: HIPAA-164.312-c-1
+    title: Integrity - authentication of ePHI
+    predicate: signature_present
+    severity: blocker
+    references:
+      - 45 CFR §164.312(c)(1)
+  - id: HIPAA-164.312-e-2
+    title: Transmission security - integrity controls
+    predicate: chain_verifies
+    severity: blocker
+    references:
+      - 45 CFR §164.312(e)(2)
+  - id: HIPAA-164.502-b
+    title: Minimum necessary - PHI redacted when detected
+    predicate: phi_redacted_when_detected
+    severity: blocker
+    references:
+      - 45 CFR §164.502(b)

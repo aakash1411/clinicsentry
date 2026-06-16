@@ -1,0 +1,248 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - run: pip install -e '.[dev]'
+      - run: ruff format --check .
+      - run: ruff check .
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - run: pip install -e '.[dev]'
+      - run: mypy
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+      - run: pip install -e '.[dev,all]'
+      - run: pytest --cov=clinicsentry --cov-report=xml --cov-report=term -q
+      - name: Upload coverage
+        if: matrix.python-version == '3.11'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.xml
+
+  import-safety:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -e .
+      - name: Import every public module in a subprocess
+        run: |
+          python - <<'PY'
+          import importlib
+          import pkgutil
+          import sys
+          import clinicsentry
+
+          failed = []
+          for mod in pkgutil.walk_packages(clinicsentry.__path__, prefix="clinicsentry."):
+              if "dashboard" in mod.name or "cli" in mod.name:
+                  continue
+              try:
+                  importlib.import_module(mod.name)
+              except Exception as e:
+                  failed.append((mod.name, repr(e)))
+
+          for name, err in failed:
+              print(f"FAIL: {name}: {err}", file=sys.stderr)
+          sys.exit(1 if failed else 0)
+          PY
+
+  license-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -e '.[dev]' pip-licenses
+      - run: |
+          pip-licenses --format=markdown --order=license \
+            --allow-only="Apache Software License;Apache License 2.0;Apache-2.0;Apache-2.0 OR BSD-2-Clause;Apache-2.0 OR BSD-3-Clause;MIT License;MIT;BSD License;BSD 3-Clause;BSD 2-Clause;BSD-3-Clause;BSD-2-Clause;ISC;ISC License (ISCL);Mozilla Public License 2.0 (MPL 2.0);MPL-2.0;Python Software Foundation License;PSF-2.0;Freely Distributable;The Unlicense (Unlicense);Public Domain"
+
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -e '.[dev]'
+      - run: pip-audit --strict || true   # advisory until baseline established
+      - run: bandit -r src/clinicsentry -ll -ii
+
+  api-stability:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -e .
+      - name: Check public __all__ surface is non-empty
+        run: |
+          python - <<'PY'
+          import clinicsentry
+          assert clinicsentry.__all__, "clinicsentry.__all__ must not be empty"
+          assert "ClinicSentry" in clinicsentry.__all__
+          print("public surface:", sorted(clinicsentry.__all__))
+          PY
+
+  package-data:
+    # Verifies the compliance YAML rule files are included in both wheel and
+    # sdist artifacts. Without this, `load_default_rulesets()` silently returns
+    # zero rules at runtime, producing empty regulatory reports.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - run: pip install build
+      - run: python -m build
+      - name: Verify rules YAML in wheel
+        run: |
+          python -m zipfile -l dist/*.whl | grep "compliance/rules/.*\.yaml" | tee /tmp/wheel-yaml.txt
+          test $(wc -l < /tmp/wheel-yaml.txt) -ge 4
+      - name: Verify rules YAML in sdist
+        run: |
+          tar -tzf dist/*.tar.gz | grep "compliance/rules/.*\.yaml" | tee /tmp/sdist-yaml.txt
+          test $(wc -l < /tmp/sdist-yaml.txt) -ge 4
+      - name: Verify default rulesets load from installed wheel
+        run: |
+          python -m venv /tmp/wheelvenv
+          /tmp/wheelvenv/bin/pip install dist/*.whl
+          /tmp/wheelvenv/bin/python -c "
+          from clinicsentry.compliance import load_default_rulesets
+          sets = load_default_rulesets()
+          assert len(sets) == 4, sets
+          assert sum(len(s.rules) for s in sets) >= 14
+          print('OK:', len(sets), 'rulesets')
+          "
+
+  postgres-integration:
+    # Postgres audit backend integration tests via testcontainers. The
+    # ubuntu-latest runner ships a running Docker daemon, so testcontainers
+    # talks to it over the default socket — no docker-in-docker service needed.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - run: pip install -e '.[dev,postgres]' 'testcontainers[postgres]>=4.0' 'psycopg[binary]>=3.1'
+      - run: pytest tests/test_postgres_integration.py -q
+
+  adapter-sdks:
+    # Real-SDK compatibility tests for each adapter. Each adapter test file
+    # auto-skips when its SDK is not installed, so a fan-out matrix lets each
+    # SDK be installed in its own clean job and tested independently.
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - extra: "langgraph"
+            test: "tests/adapters/test_langgraph_integration.py"
+          - extra: "crewai"
+            test: "tests/adapters/test_crewai_integration.py"
+          - extra: "adk"
+            test: "tests/adapters/test_google_adk_integration.py"
+          - extra: "openai-agents"
+            test: "tests/adapters/test_openai_agents_integration.py"
+          - extra: "claude"
+            test: "tests/adapters/test_claude_sdk_integration.py"
+          - extra: "mcp"
+            test: "tests/adapters/test_mcp_proxy_integration.py"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - run: pip install -e ".[dev,${{ matrix.extra }}]"
+      - run: pytest ${{ matrix.test }} -q
+
+  heavy-deps:
+    # Heavy PHI detection happy-path runs. Manual / on-demand only because
+    # spaCy model wheels and Tesseract binary inflate runtime significantly
+    # and we don't want them on every PR.
+    if: ${{ contains(github.event.head_commit.message, '[heavy-deps]') || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - name: Install Tesseract
+        run: sudo apt-get update && sudo apt-get install -y tesseract-ocr
+      - run: pip install -e '.[dev,phi,nlp-medical,ocr]'
+      - name: Install spaCy clinical model
+        run: |
+          pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.4/en_core_sci_sm-0.5.4.tar.gz || echo "scispacy model unavailable"
+      - run: pytest tests/test_phi_heavy_deps.py -q
+
+  mutation:
+    # Mutation testing against the four novelty modules. Manually triggered
+    # only — full runs cost ~10 minutes and aren't useful on every PR.
+    if: ${{ contains(github.event.head_commit.message, '[mutation]') || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - run: pip install -e '.[dev]'
+      - name: Run mutmut on each novelty module
+        run: |
+          set -e
+          for module in \
+              src/clinicsentry/phi/propagation.py \
+              src/clinicsentry/audit/chain.py \
+              src/clinicsentry/escalation/confidence.py \
+              src/clinicsentry/meddevice/mode.py; do
+            echo "=== mutmut: $module ==="
+            rm -rf .mutmut-cache
+            mutmut run --paths-to-mutate="$module" --simple-output || true
+            mutmut results
+          done

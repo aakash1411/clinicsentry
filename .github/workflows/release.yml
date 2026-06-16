@@ -1,0 +1,109 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+  id-token: write   # cosign keyless signing + PyPI trusted publishing
+  packages: write
+
+jobs:
+  build-and-sign:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install build tooling
+        run: pip install --upgrade build twine
+
+      - name: Verify tag matches package version
+        run: |
+          PKG_VERSION=$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          if [ "$PKG_VERSION" != "$TAG_VERSION" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match pyproject version $PKG_VERSION" >&2
+            exit 1
+          fi
+
+      - name: Build wheel + sdist
+        run: python -m build
+
+      - name: Validate distribution metadata
+        run: twine check --strict dist/*
+
+      - name: Smoke-test wheel in a clean venv
+        run: |
+          python -m venv /tmp/smoke
+          /tmp/smoke/bin/pip install dist/*.whl
+          /tmp/smoke/bin/python -c "import clinicsentry; print(clinicsentry.__version__)"
+          /tmp/smoke/bin/clinicsentry scan "SSN 123-45-6789" | grep -q "REDACTED"
+
+      - name: Install Syft (SBOM)
+        uses: anchore/sbom-action/download-syft@v0.17.7
+
+      - name: Generate CycloneDX SBOM
+        run: |
+          syft dir:. -o cyclonedx-json=sbom.cyclonedx.json
+          syft dir:. -o spdx-json=sbom.spdx.json
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3.7.0
+
+      - name: Sign SBOM (keyless)
+        env:
+          COSIGN_EXPERIMENTAL: "1"
+        run: cosign sign-blob --yes --output-signature sbom.cyclonedx.json.sig sbom.cyclonedx.json
+
+      - name: Build container image
+        run: docker build -t clinicsentry:${{ github.ref_name }} .
+
+      - name: Sign container image (keyless)
+        env:
+          COSIGN_EXPERIMENTAL: "1"
+        run: |
+          docker save clinicsentry:${{ github.ref_name }} -o image.tar
+          cosign sign-blob --yes --output-signature image.tar.sig image.tar
+
+      - name: Upload release artifacts
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*
+            sbom.cyclonedx.json
+            sbom.spdx.json
+            sbom.cyclonedx.json.sig
+            image.tar.sig
+
+      - name: Store dists for publish job
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-dists
+          path: dist/
+
+  publish-pypi:
+    # Requires a PyPI "trusted publisher" configured for this repo + workflow.
+    # The `pypi` environment gates the publish behind any protection rules you
+    # configure (e.g. required reviewers).
+    needs: build-and-sign
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+    permissions:
+      id-token: write
+    steps:
+      - name: Download dists
+        uses: actions/download-artifact@v4
+        with:
+          name: python-dists
+          path: dist/
+
+      - name: Publish to PyPI (trusted publishing)
+        uses: pypa/gh-action-pypi-publish@release/v1
