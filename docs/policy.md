@@ -6,13 +6,29 @@ A ClinicSentry policy is a single YAML file. Precedence (lowest → highest): bu
 version: "0.1.0"
 
 phi_firewall:
-  mode: REDACT                    # REDACT | PSEUDONYMIZE | GENERALIZE | SUPPRESS
+  mode: REDACT                    # REDACT | PSEUDONYMIZE | GENERALIZE | SUPPRESS | AUDIT_ONLY
   use_presidio: false
   decode_encoded: true            # scan base64-decodable tokens for embedded PHI
   max_depth: 64                   # deeper nesting is redacted wholesale (fail closed)
   overrides:
     DATE: GENERALIZE
     ZIP: GENERALIZE
+  allowlist:                      # public, non-PHI literals kept readable;
+    PHONE:                        # matching ignores case and separators
+      - "1-800-646-4633"
+    URL:
+      - "https://www.medtronicdiabetes.com/support"
+  # detectors: [EMAIL, PHONE, SSN, DEVICE_ID]   # exact set; default = core set
+  locales: [en_US]                # + en_GB (NHS/NINO/IBAN), de_DE, en_CA
+  custom_detectors:               # domain-specific formats (see docs/api.md
+    - label: PUMP_SERIAL          # for the @register_detector code API)
+      pattern: '\b(?:SN|serial)[\s:#-]*[A-Z0-9]{6,}\b'
+      flags: [IGNORECASE]
+      confidence: 0.99
+      mode: REDACT
+  skip_fields: ["public_kb_snippet", "citation.*"]   # dotted-path globs
+  always_redact_fields: ["raw_user_transcript"]
+  # detector_backend: aws_comprehend_medical    # cloud NER layer (needs boto3)
 
 escalation:
   thresholds:
@@ -58,7 +74,10 @@ Secrets (HMAC keys, DSNs) are **not** policy fields and are read separately
 ## Validation
 
 ```bash
-clinicsentry policy-validate policy.yaml
+clinicsentry policy-validate policy.yaml   # load + print the resolved config
+clinicsentry policy-schema                 # print the authoritative JSON Schema
 ```
 
-Prints the resolved `PolicyConfig` as JSON, or a clear error if any field is malformed. `extra="forbid"` semantics: unknown keys are rejected (ADR-0012).
+Prints the resolved `PolicyConfig` as JSON, or a clear error if any field is malformed. `extra="forbid"` semantics: unknown keys are rejected (ADR-0012). The YAML examples in this file are loaded through `load_policy` in CI, so this reference cannot drift from the schema.
+
+Detector coverage per HIPAA identifier: see [phi-coverage.md](phi-coverage.md).

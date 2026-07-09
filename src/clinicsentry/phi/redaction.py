@@ -25,6 +25,9 @@ class RedactionMode(str, enum.Enum):
     PSEUDONYMIZE = "PSEUDONYMIZE"
     GENERALIZE = "GENERALIZE"
     SUPPRESS = "SUPPRESS"
+    # Shadow mode: text passes through unchanged; findings and audit events
+    # are still produced. For measuring would-be redactions on live traffic.
+    AUDIT_ONLY = "AUDIT_ONLY"
 
 
 @dataclass
@@ -92,14 +95,53 @@ def apply_redaction(
     redacted_values: list[str] = []
     for hit in ordered:
         eff_mode = overrides.get(hit.phi_type, mode)
-        if eff_mode == RedactionMode.REDACT:
-            replacement = f"[REDACTED:{hit.phi_type}]"
-        elif eff_mode == RedactionMode.PSEUDONYMIZE:
-            replacement = _pseudonym(hit.value, hit.phi_type, session_salt)
-        elif eff_mode == RedactionMode.GENERALIZE:
-            replacement = _generalize(hit.value, hit.phi_type)
-        else:  # SUPPRESS
-            replacement = ""
-        new_text = new_text[: hit.start] + replacement + new_text[hit.end :]
+        replacement = replacement_for(hit.value, hit.phi_type, eff_mode, session_salt)
+        if replacement is not None:
+            new_text = new_text[: hit.start] + replacement + new_text[hit.end :]
         redacted_values.append(hit.value)
     return RedactionResult(text=new_text, redacted_values=redacted_values)
+
+
+def replacement_for(
+    value: str,
+    phi_type: str,
+    mode: RedactionMode,
+    session_salt: str = "session",
+) -> str | None:
+    """Return the replacement text for one hit, or None to leave it in place."""
+    if mode == RedactionMode.AUDIT_ONLY:
+        return None
+    if mode == RedactionMode.REDACT:
+        return f"[REDACTED:{phi_type}]"
+    if mode == RedactionMode.PSEUDONYMIZE:
+        return _pseudonym(value, phi_type, session_salt)
+    if mode == RedactionMode.GENERALIZE:
+        return _generalize(value, phi_type)
+    return ""  # SUPPRESS
+
+
+def shape_preserving(value: str, salt: str) -> str:
+    """Replace digits with digits and letters with letters, keeping separators.
+
+    The output is deterministic per ``(salt, value)`` so repeated occurrences
+    map consistently within a session. This preserves *shape* for downstream
+    format validators; it is pseudonymization, not encryption.
+    """
+    digest = hashlib.sha256(f"{salt}|shape|{value}".encode()).digest()
+    out: list[str] = []
+    i = 0
+    for ch in value:
+        b = digest[i % len(digest)]
+        if ch.isdigit():
+            out.append(str(b % 10))
+            i += 1
+        elif ch.isalpha():
+            letter = chr(ord("a") + b % 26)
+            out.append(letter.upper() if ch.isupper() else letter)
+            i += 1
+        else:
+            out.append(ch)
+    return "".join(out)
+
+
+__all__ += ["shape_preserving", "replacement_for"]

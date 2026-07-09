@@ -239,6 +239,59 @@ def _cmd_policy_validate(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_policy_schema(args: argparse.Namespace) -> int:
+    """Print the authoritative policy JSON Schema."""
+    from clinicsentry.policy import policy_schema
+
+    print(json.dumps(policy_schema(), indent=2))
+    return 0
+
+
+def _cmd_bench(args: argparse.Namespace) -> int:
+    """Measure scan latency across representative workloads on this machine."""
+    import statistics
+    import time
+
+    from clinicsentry.phi.firewall import PHIFirewall
+
+    note = (
+        "Patient seen for follow-up. Contact jane.doe@example.com, "
+        "phone (555) 123-4567, MRN: AB-1234567, SSN 123-45-6789. "
+    ) * 20
+    workloads: dict[str, object] = {
+        "ascii_3kb": note,
+        "adversarial_3kb": note.replace("e", "е", 40) + "SSN: 1​23-45-6789",
+        "nested_deep": _nest(note[:200], 30),
+        "message_list": [{"role": "user", "content": note[:500]}] * 10,
+    }
+    firewalls = {"regex": PHIFirewall()}
+    presidio_fw = PHIFirewall(use_presidio=True)
+    if presidio_fw._presidio is not None and presidio_fw._presidio.available:
+        firewalls["presidio"] = presidio_fw
+    print(f"{'firewall':10} {'workload':16} {'p50_ms':>8} {'p95_ms':>8} {'p99_ms':>8}")
+    for fw_name, fw in firewalls.items():
+        for wl_name, payload in workloads.items():
+            samples: list[float] = []
+            for _ in range(args.n):
+                t0 = time.perf_counter()
+                fw.scan(payload, origin_agent="bench")
+                samples.append((time.perf_counter() - t0) * 1000)
+            samples.sort()
+            p50 = statistics.median(samples)
+            p95 = samples[min(int(len(samples) * 0.95), len(samples) - 1)]
+            p99 = samples[min(int(len(samples) * 0.99), len(samples) - 1)]
+            print(f"{fw_name:10} {wl_name:16} {p50:>8.3f} {p95:>8.3f} {p99:>8.3f}")
+    return 0
+
+
+def _nest(leaf: str, depth: int) -> object:
+    """Build a nested payload for the bench command."""
+    payload: object = leaf
+    for _ in range(depth):
+        payload = {"child": payload}
+    return payload
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Construct the top-level ``argparse`` parser."""
     parser = argparse.ArgumentParser(
@@ -288,6 +341,13 @@ def build_parser() -> argparse.ArgumentParser:
     p_pv = sub.add_parser("policy-validate", help="Validate a policy YAML file.")
     p_pv.add_argument("policy", help="Path to policy.yaml.")
     p_pv.set_defaults(func=_cmd_policy_validate)
+
+    p_ps = sub.add_parser("policy-schema", help="Print the policy JSON Schema.")
+    p_ps.set_defaults(func=_cmd_policy_schema)
+
+    p_bench = sub.add_parser("bench", help="Quick scan-latency benchmark on this machine.")
+    p_bench.add_argument("--n", type=int, default=200, help="Samples per cell.")
+    p_bench.set_defaults(func=_cmd_bench)
 
     return parser
 

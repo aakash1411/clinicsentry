@@ -201,3 +201,33 @@ class RegulatoryReport:
         if self.iec62304_section is not None:
             out["iec62304_section"] = self.iec62304_section
         return out
+
+    def to_html(self, path: str | Any = None) -> str:
+        """Render as a self-contained HTML attestation page.
+
+        Writes to ``path`` when given; always returns the HTML string.
+        """
+        from clinicsentry.audit.pdf_report import render_report_html
+
+        html = render_report_html(self)
+        if path is not None:
+            from pathlib import Path
+
+            Path(path).write_text(html, encoding="utf-8")
+        return html
+
+    def to_pdf(self, path: str | Any) -> Any:
+        """Render as PDF via weasyprint (``pip install clinicsentry[pdf]``)."""
+        from clinicsentry.audit.pdf_report import render_report_pdf
+
+        return render_report_pdf(self, path)
+
+    def export_signed(self, path: str | Any, secret_key: bytes) -> Any:
+        """Write the report JSON plus a detached HMAC-SHA256 signature.
+
+        Produces ``<path>`` and ``<path>.sig``; verify with
+        :func:`clinicsentry.audit.report.verify_signed_report`.
+        """
+        from clinicsentry.audit.report import export_signed_report
+
+        return export_signed_report(self, path, secret_key)

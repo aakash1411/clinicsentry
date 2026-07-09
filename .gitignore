@@ -38,6 +38,3 @@ _tmp/
 *.sqlite
 *.sqlite3
 clinicsentry_audit.log
-
-# Local agent settings
-.claude/
