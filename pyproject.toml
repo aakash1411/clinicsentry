@@ -91,7 +91,6 @@ dev = [
     "testcontainers[postgres]>=4.0",
     "pip-audit>=2.7",
     "bandit>=1.7",
-    "cryptography>=41.0",
     "pytest>=8.0",
     "pytest-asyncio>=0.23",
     "pytest-cov>=4.1",
@@ -108,7 +107,6 @@ all = [
     "opentelemetry-api>=1.27",
     "opentelemetry-sdk>=1.27",
     "prometheus-client>=0.20",
-    "cryptography>=41.0",
 ]
 
 [project.scripts]
@@ -233,6 +231,7 @@ module = [
     "anthropic.*",
     "boto3.*",
     "botocore.*",
+    "cryptography.*",
     "opentelemetry.*",
     "pytesseract.*",
     "PIL.*",
