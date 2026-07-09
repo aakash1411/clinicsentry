@@ -2,9 +2,13 @@
 
 from __future__ import annotations
 
+import hashlib
+import hmac
+import json
 from collections import Counter
 from collections.abc import Iterable
 from datetime import UTC, datetime
+from pathlib import Path
 from typing import Any
 
 from clinicsentry.compliance import (
@@ -189,3 +193,76 @@ def build_report(
         recommendations=recommendations,
         iec62304_section=iec62304,
     )
+
+
+# ---------------------------------------------------------------------------
+# Portable export: signed JSON + schema
+# ---------------------------------------------------------------------------
+
+
+def export_signed_report(
+    report: RegulatoryReport, path: str | Path, secret_key: bytes
+) -> tuple[Path, Path]:
+    """Write ``<path>`` (canonical JSON) and ``<path>.sig`` (hex HMAC-SHA256).
+
+    The signature covers the exact bytes written, so the attestation artifact
+    itself is tamper-evident independent of the audit store.
+    """
+    out = Path(path)
+    payload = json.dumps(report.to_dict(), sort_keys=True, indent=2, default=str).encode()
+    out.write_bytes(payload)
+    sig = hmac.new(secret_key, payload, hashlib.sha256).hexdigest()
+    sig_path = out.with_suffix(out.suffix + ".sig")
+    sig_path.write_text(sig + "\n", encoding="utf-8")
+    return out, sig_path
+
+
+def verify_signed_report(path: str | Path, secret_key: bytes) -> bool:
+    """Check a report file against its detached ``.sig``."""
+    out = Path(path)
+    sig_path = out.with_suffix(out.suffix + ".sig")
+    expected = hmac.new(secret_key, out.read_bytes(), hashlib.sha256).hexdigest()
+    return hmac.compare_digest(expected, sig_path.read_text(encoding="utf-8").strip())
+
+
+def report_schema() -> dict[str, Any]:
+    """JSON Schema for the report envelope, for downstream GRC tooling."""
+    obj = {"type": "object"}
+    return {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "title": "ClinicSentry regulatory report",
+        "type": "object",
+        "required": [
+            "report_metadata",
+            "session_summary",
+            "phi_handling_summary",
+            "clinical_decision_summary",
+            "compliance_attestation",
+        ],
+        "properties": {
+            "report_metadata": obj,
+            "session_summary": obj,
+            "phi_handling_summary": obj,
+            "clinical_decision_summary": obj,
+            "compliance_attestation": {
+                "type": "object",
+                "properties": {"_summary": {"type": "object"}},
+                "additionalProperties": {
+                    "type": "object",
+                    "required": ["satisfied", "severity"],
+                    "properties": {
+                        "satisfied": {"type": "boolean"},
+                        "severity": {"type": "string"},
+                        "framework": {"type": "string"},
+                        "description": {"type": "string"},
+                    },
+                },
+            },
+            "anomalies": {"type": "array", "items": obj},
+            "recommendations": {"type": "array", "items": {"type": "string"}},
+            "iec62304_section": obj,
+        },
+    }
+
+
+__all__ += ["export_signed_report", "verify_signed_report", "report_schema"]

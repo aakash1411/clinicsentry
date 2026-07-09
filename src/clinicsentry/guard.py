@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 import warnings
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
@@ -21,7 +21,7 @@ from clinicsentry.audit.report import build_report
 from clinicsentry.escalation.confidence import ConfidenceInputs, ConfidenceScorer
 from clinicsentry.escalation.router import EscalationRouter
 from clinicsentry.meddevice.mode import MedDeviceMode
-from clinicsentry.phi.firewall import PHIFirewall
+from clinicsentry.phi.firewall import MetricHook, PHIFirewall
 from clinicsentry.phi.propagation import PropagationGraph
 from clinicsentry.policy import PolicyConfig, load_policy
 from clinicsentry.types import (
@@ -48,6 +48,8 @@ class ClinicSentry:
         secret_key: bytes | None = None,
         adapter: AgentFrameworkAdapter | None = None,
         audit_backend: AuditBackend | None = None,
+        detectors: Sequence[Any] = (),
+        on_metric: MetricHook | None = None,
     ) -> None:
         """Construct a guard instance.
 
@@ -58,6 +60,8 @@ class ClinicSentry:
             secret_key: HMAC key for audit signing; auto-generated when omitted.
             adapter: explicit adapter; defaults to :class:`GenericAdapter`.
             audit_backend: override storage; otherwise resolved from policy.
+            detectors: custom detector objects (from ``register_detector``).
+            on_metric: callback ``(name, value, tags)`` for firewall metrics.
         """
         cfg = policy if isinstance(policy, PolicyConfig) else load_policy(policy or {})
         self.policy = cfg
@@ -66,6 +70,9 @@ class ClinicSentry:
         key_was_generated = secret_key is None
         self.secret_key = secret_key or os.urandom(32)
 
+        from clinicsentry.phi.custom import build_custom_detectors
+
+        custom = [*build_custom_detectors(cfg.phi_custom_detectors), *detectors]
         self.propagation = PropagationGraph()
         self.firewall = PHIFirewall(
             mode=cfg.phi_mode,
@@ -75,6 +82,14 @@ class ClinicSentry:
             propagation=self.propagation,
             decode_encoded=cfg.decode_encoded,
             max_depth=cfg.max_scan_depth,
+            allowlist={k: list(v) for k, v in cfg.phi_allowlist.items()},
+            detectors=cfg.phi_detectors,
+            locales=cfg.phi_locales,
+            custom_detectors=custom,
+            skip_fields=cfg.phi_skip_fields,
+            always_redact_fields=cfg.phi_always_redact_fields,
+            detector_backend=cfg.phi_detector_backend,
+            on_metric=on_metric,
         )
         self.scorer = ConfidenceScorer()
         self.router = EscalationRouter(

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "clinicsentry"
-version = "0.3.0"
+version = "0.4.0"
 description = "Framework-agnostic compliance middleware for clinical AI agents (HIPAA, FDA TPLC, IEC 62304)."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -25,10 +25,11 @@ classifiers = [
     "Topic :: Security",
     "Typing :: Typed",
 ]
+# Pure-Python core: the default audit chain signs with stdlib hmac/hashlib,
+# so serverless bundles stay light. Ed25519 clinician auth needs [signing].
 dependencies = [
     "pydantic>=2.0",
     "PyYAML>=6.0",
-    "cryptography>=41.0",
 ]
 
 [project.urls]

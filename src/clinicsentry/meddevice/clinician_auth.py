@@ -90,7 +90,8 @@ class ClinicianAuthValidator:
             from cryptography.hazmat.primitives.serialization import load_pem_public_key
         except ImportError as exc:  # pragma: no cover
             raise ClinicianAuthError(
-                "cryptography is required for clinician authorization"
+                "cryptography is required for clinician authorization; "
+                "pip install 'clinicsentry[signing]'"
             ) from exc
 
         token = AuthorizationToken.decode(token_blob)

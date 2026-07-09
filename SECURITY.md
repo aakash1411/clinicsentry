@@ -6,8 +6,8 @@ ClinicSentry is pre-1.0 software. Only the latest minor release receives securit
 
 | Version | Supported |
 |---------|-----------|
-| 0.3.x   | yes       |
-| < 0.3.0 | no        |
+| 0.4.x   | yes       |
+| < 0.4.0 | no        |
 
 ## Reporting a Vulnerability
 
