@@ -193,7 +193,8 @@ production healthcare-chatbot evaluation.
 - Worked example: `examples/clinical_summarizer.py`.
 - 1,288-line README spec; 441-line implementation report.
 
-[Unreleased]: https://github.com/aakash1411/clinicsentry/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/aakash1411/clinicsentry/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/aakash1411/clinicsentry/releases/tag/v0.4.0
 [0.3.0]: https://github.com/aakash1411/clinicsentry/releases/tag/v0.3.0
 [0.2.0]: https://github.com/aakash1411/clinicsentry/releases/tag/v0.2.0
 [0.1.0]: https://github.com/aakash1411/clinicsentry/releases/tag/v0.1.0
