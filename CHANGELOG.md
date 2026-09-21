@@ -4,6 +4,13 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Fixed
+
+- Pin `ruff` to a single version (`0.16.7`) in both the `dev` extra and
+  `.pre-commit-config.yaml` so `ruff format --check .` and the pre-commit
+  hooks agree on a fresh `pip install -e '.[dev,all]'`; reformat the two
+  Markdown code fences the newer formatter flagged.
+
 ## [0.4.0] — 2026-06-16
 
 PHI-firewall extensibility release, driven by adopter feedback from a
