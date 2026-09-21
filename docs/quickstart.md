@@ -4,8 +4,11 @@
 
 ```bash
 pip install clinicsentry            # core
-pip install 'clinicsentry[all]'     # everything (Presidio, FHIR/HL7/DICOM, OTEL, …)
+pip install 'clinicsentry[all]'     # every pip-only extra (Presidio, FHIR/HL7/DICOM, Postgres, S3, OTEL, cloud KMS, dashboard, …)
 ```
+
+`[all]` does not include `[hsm]`, `[pdf]`, `[nlp-medical]`, `[ocr]` or the agent-SDK extras
+(`[langgraph]`, `[crewai]`, `[adk]`, `[openai-agents]`, `[claude]`, `[mcp]`); install those separately.
 
 ## Five-minute example
 

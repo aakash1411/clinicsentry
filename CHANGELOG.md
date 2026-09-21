@@ -4,6 +4,14 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Fixed
+
+- The `[all]` extra now installs every pip-only extra as the README promised:
+  `signing`, `postgres`, `s3`, `cloud-kms`, `dashboard` and the OTLP exporter
+  were missing, so `pip install 'clinicsentry[all]'` left the Postgres/S3
+  audit backends and cloud KMS providers un-importable and the Postgres and
+  AWS KMS integration tests silently skipped under `.[dev,all]`.
+
 ## [0.4.0] — 2026-06-16
 
 PHI-firewall extensibility release, driven by adopter feedback from a

@@ -33,10 +33,12 @@ your existing agent code.
 
 ```bash
 pip install clinicsentry            # core
-pip install 'clinicsentry[all]'     # everything (Presidio, FHIR, OTEL, cloud KMS, …)
+pip install 'clinicsentry[all]'     # every pip-only extra (Presidio, FHIR/HL7/DICOM, Postgres, S3, OTEL, cloud KMS, dashboard, …)
 ```
 
-**Extras:** `[postgres]`, `[cloud-kms]`, `[otel]`, `[dashboard]`, `[all]`
+**Extras:** `[signing]`, `[phi]`, `[fhir]`, `[hl7]`, `[dicom]`, `[postgres]`, `[s3]`, `[otel]`, `[metrics]`, `[cloud-kms]`, `[dashboard]`, `[all]`
+
+`[all]` bundles the extras above. Extras that need system libraries or a specific agent SDK are opt-in: `[hsm]`, `[pdf]`, `[nlp-medical]`, `[ocr]`, `[langgraph]`, `[crewai]`, `[adk]`, `[openai-agents]`, `[claude]`, `[mcp]`.
 
 ## Quick Example
 
