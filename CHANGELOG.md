@@ -4,6 +4,11 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Added
+
+- `AGENTS.md`: agent-context entry point covering venv setup, the CI gates,
+  contribution rules and known tooling gotchas.
+
 ## [0.4.0] — 2026-06-16
 
 PHI-firewall extensibility release, driven by adopter feedback from a
