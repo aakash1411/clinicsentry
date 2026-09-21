@@ -66,9 +66,9 @@ should print JSON with `"redacted": "SSN [REDACTED:SSN]"`.
   `pip install -e '.[dev]'` (and CI) resolve to the current release, while
   `.pre-commit-config.yaml` pins `ruff-pre-commit v0.4.10`. The two disagree:
   - Current ruff (0.16.x at the time of writing) also formats Python code
-    blocks inside `.md` files, so `ruff format --check .` fails on `README.md`
-    and `docs/api-stability.md` even though every `.py` file is clean.
-    `ruff format --check --exclude '*.md' .` isolates the Python result.
+    blocks inside `.md` files (README, `docs/`), so `ruff format --check .`
+    covers Markdown too — run `ruff format <file>.md` after editing a code
+    block, or `ruff format --check --exclude '*.md' .` to isolate Python.
   - `pre-commit run --all-files` (ruff 0.4.10) auto-rewrites ~10 unrelated
     files (`PT001`/`PT023` fixture-parens style, two reformatted files) and
     leaves 5 `UP038` errors that need `--unsafe-fixes`. If you only touched
