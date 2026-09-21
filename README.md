@@ -52,6 +52,7 @@ scan = guard.firewall.scan(
 )
 print(scan.redacted)  # PHI replaced with [REDACTED:MRN], [REDACTED:SSN]
 
+
 # 2. Register actions with risk tiers
 @guard.register_action(
     tier=ClinicalRiskTier.ADVISORY,
@@ -60,6 +61,7 @@ print(scan.redacted)  # PHI replaced with [REDACTED:MRN], [REDACTED:SSN]
 )
 def summarize(payload: dict) -> str:
     return f"Summary ({len(payload['note'])} chars)"
+
 
 # 3. Evaluate — router decides: proceed / escalate / block
 decision = guard.evaluate_action(
