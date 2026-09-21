@@ -83,7 +83,7 @@ test = [
     "respx>=0.20",
 ]
 dev = [
-    "ruff>=0.4",
+    "ruff>=0.4,<0.16",  # 0.16 formats Markdown code blocks and fails `ruff format --check .`
     "mypy>=1.10",
     "pre-commit>=3.7",
     "pip-licenses>=4.4",
