@@ -10,6 +10,9 @@ All notable changes to this project are documented here. Format follows [Keep a 
   character (category `Cf`), not only five zero-width code points. Identifiers
   split by a soft hyphen, bidi control, invisible operator or tag character were
   previously not detected or only partly redacted (ADR-0016 amendment).
+- PHI firewall: phone numbers written as `(304) 892-8935` or `+1 304-892-8935`
+  left the leading `(` or `+` unredacted. Phone leakage on the bundled
+  synthetic benchmark drops from 32/50 to 0/50.
 
 ## [0.6.0] — 2026-11-17
 
