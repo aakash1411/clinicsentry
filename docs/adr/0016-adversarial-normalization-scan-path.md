@@ -78,3 +78,16 @@ the host catches exceptions broadly.
 - ADR-0007 (composition operator), ADR-0014 (threat model scope),
   ADR-0015 (redaction mode selection).
 - UTS #39 (Unicode security mechanisms, confusables).
+
+## Amendment (2026-11-17): strip all Unicode format characters
+
+Invisible-character stripping covered only five code points (ZWSP, ZWNJ, ZWJ,
+BOM, word joiner). Other Unicode format characters (category `Cf`: soft hyphen,
+bidi controls such as LRM/RLO/LRI, invisible operators, the Arabic letter mark,
+tag characters) also render invisibly and split identifiers past the regex
+stage: `123-45\u00ad-6789` passed through unredacted. Normalization now strips
+every `Cf` character. This happens in detection space only; spans still map back
+to the original text, so redaction covers the inserted characters and
+non-PHI text (including emoji ZWJ sequences) is returned unchanged. The ASCII
+fast path is unaffected because every `Cf` character is non-ASCII.
+

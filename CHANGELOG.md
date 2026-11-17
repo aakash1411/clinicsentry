@@ -4,6 +4,13 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Fixed
+
+- PHI firewall: adversarial normalization now strips every Unicode format
+  character (category `Cf`), not only five zero-width code points. Identifiers
+  split by a soft hyphen, bidi control, invisible operator or tag character were
+  previously not detected or only partly redacted (ADR-0016 amendment).
+
 ## [0.6.0] — 2026-11-17
 
 PHI measurement release: detection recall is now measurable on labelled data.
