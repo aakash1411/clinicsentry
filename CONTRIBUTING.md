@@ -33,12 +33,25 @@ Commit subjects describe the change (e.g. "Add PHI detection benchmark harness")
 3. Tag the merge commit `vX.Y.Z` on `main` and push the tag. `release.yml` verifies the tag matches `pyproject.toml`, builds, smoke-tests, generates and signs the SBOM, and creates the GitHub release.
 4. Merge `main` back into `develop`.
 
+## Coverage policy
+
+Coverage goes up with every release and never down:
+
+- **Ratchet.** The release PR sets `fail_under` in `pyproject.toml` to the floor of
+  the measured total (line + branch). It is never lowered.
+- **New modules** ship at ≥ 90% and get an entry in
+  `[tool.clinicsentry.coverage_floors]`, which CI checks with
+  `scripts/check_coverage_floors.py`.
+- **Debt.** Each release raises at least two modules that are below 85% to ≥ 85%
+  and adds them to the floors table.
+- The release PR records the measured total in `CHANGELOG.md`.
+
 ## Pull Requests
 
 Every PR MUST:
 
 1. Reference the ADR it implements or amend an existing one if architecture changes.
-2. Keep test coverage ≥ 85% (CI enforces).
+2. Not lower total coverage below `fail_under` or any per-module floor (CI enforces; see Coverage policy).
 3. Pass `ruff check`, `ruff format --check`, `mypy --strict`, `pytest`.
 4. Update `CHANGELOG.md` under the `## [Unreleased]` heading.
 5. Update `CHANGELOG.md` if it advances a feature.

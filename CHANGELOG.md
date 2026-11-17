@@ -4,6 +4,14 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Changed
+
+- Coverage policy: `fail_under` raised from 75 to 88 and now ratchets at every
+  release; per-module floors in `[tool.clinicsentry.coverage_floors]` are
+  enforced in CI by `scripts/check_coverage_floors.py`.
+- Tests for `phi/minimum_necessary.py` (73% → 100%), `audit/backend.py`
+  (54% → 98%) and `escalation/channels.py` (60% → 100%).
+
 ## [0.6.1] — 2026-11-17
 
 ### Fixed
