@@ -4,6 +4,10 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+## [0.6.0] — 2026-11-17
+
+PHI measurement release: detection recall is now measurable on labelled data.
+
 ### Added
 
 - `clinicsentry phi-bench` and `clinicsentry.benchmarks`: PHI detection
@@ -256,7 +260,9 @@ production healthcare-chatbot evaluation.
 - Worked example: `examples/clinical_summarizer.py`.
 - 1,288-line README spec; 441-line implementation report.
 
-[Unreleased]: https://github.com/aakash1411/clinicsentry/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/aakash1411/clinicsentry/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/aakash1411/clinicsentry/releases/tag/v0.6.0
+[0.5.0]: https://github.com/aakash1411/clinicsentry/releases/tag/v0.5.0
 [0.4.0]: https://github.com/aakash1411/clinicsentry/releases/tag/v0.4.0
 [0.3.0]: https://github.com/aakash1411/clinicsentry/releases/tag/v0.3.0
 [0.2.0]: https://github.com/aakash1411/clinicsentry/releases/tag/v0.2.0
