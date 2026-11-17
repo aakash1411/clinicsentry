@@ -5,7 +5,7 @@ firewall uses, so teams can combine the fast regex pass with cloud recall for
 names/addresses. Enable via policy::
 
     phi_firewall:
-      detector_backend: aws_comprehend_medical
+      detector_backend: aws_comprehend_medical   # or local_llm (see phi/llm.py)
 
 A backend failure returns no hits rather than failing the scan (matching the
 Presidio layer): the deterministic detectors remain active, and the error is
@@ -18,6 +18,7 @@ from collections.abc import Callable
 from typing import Any
 
 from clinicsentry.phi.detectors import Hit
+from clinicsentry.phi.llm import LocalLLMDetector
 
 __all__ = ["AWSComprehendMedicalDetector", "build_cloud_detector"]
 
@@ -82,8 +83,9 @@ class AWSComprehendMedicalDetector:
         return hits
 
 
-_BACKENDS = {
+_BACKENDS: dict[str, Callable[..., Any]] = {
     "aws_comprehend_medical": AWSComprehendMedicalDetector,
+    "local_llm": LocalLLMDetector,
 }
 
 

@@ -4,6 +4,15 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Added
+
+- `clinicsentry phi-bench` and `clinicsentry.benchmarks`: PHI detection
+  benchmark over JSONL or BRAT datasets reporting span recall, leakage rate,
+  character recall, precision and strict typed F1 per HIPAA Safe Harbor
+  category, with a `--min-recall` CI gate and a bundled synthetic dataset.
+- `LocalLLMDetector` (`phi_firewall.detector_backend: local_llm`): opt-in PHI
+  detection through a loopback-only OpenAI-compatible LLM endpoint.
+
 ## [0.5.0] — 2026-11-16
 
 Evidence-integrity release: compliance attestations now reflect controls that
