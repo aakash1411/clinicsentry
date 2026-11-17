@@ -1,6 +1,6 @@
 # Project Status
 
-**Current version:** 0.6.0 (pre-1.0; API may change between minor versions)
+**Current version:** 0.6.1 (pre-1.0; API may change between minor versions)
 
 | Area | Status |
 |------|--------|

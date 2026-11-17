@@ -4,6 +4,8 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+## [0.6.1] — 2026-11-17
+
 ### Fixed
 
 - PHI firewall: adversarial normalization now strips every Unicode format
@@ -270,7 +272,8 @@ production healthcare-chatbot evaluation.
 - Worked example: `examples/clinical_summarizer.py`.
 - 1,288-line README spec; 441-line implementation report.
 
-[Unreleased]: https://github.com/aakash1411/clinicsentry/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/aakash1411/clinicsentry/compare/v0.6.1...HEAD
+[0.6.1]: https://github.com/aakash1411/clinicsentry/releases/tag/v0.6.1
 [0.6.0]: https://github.com/aakash1411/clinicsentry/releases/tag/v0.6.0
 [0.5.0]: https://github.com/aakash1411/clinicsentry/releases/tag/v0.5.0
 [0.4.0]: https://github.com/aakash1411/clinicsentry/releases/tag/v0.4.0
