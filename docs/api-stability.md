@@ -6,12 +6,26 @@ Everything importable from the top-level package is the supported surface:
 
 ```python
 from clinicsentry import (
-    ClinicSentry, PolicyConfig, load_policy, policy_schema,
-    PHIFirewall, PHIScanResult, PHIFinding, TokenizeResult, StreamRedactor,
-    RedactionMode, register_detector,
-    ClinicSentryError, PolicyError,
-    AuditEvent, AuditEventType, ClinicalRiskTier, EscalationDecision,
-    PHITag, RegulatoryReport, minimum_necessary,
+    ClinicSentry,
+    PolicyConfig,
+    load_policy,
+    policy_schema,
+    PHIFirewall,
+    PHIScanResult,
+    PHIFinding,
+    TokenizeResult,
+    StreamRedactor,
+    RedactionMode,
+    register_detector,
+    ClinicSentryError,
+    PolicyError,
+    AuditEvent,
+    AuditEventType,
+    ClinicalRiskTier,
+    EscalationDecision,
+    PHITag,
+    RegulatoryReport,
+    minimum_necessary,
 )
 ```
 
