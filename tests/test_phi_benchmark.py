@@ -123,7 +123,7 @@ def test_bundled_dataset_regression_floor() -> None:
     docs = bundled_synthetic_dataset()
     assert len(docs) == 50
     r = evaluate_phi(PHIFirewall(), docs)
-    for cat in ("SSN", "EMAIL", "DATE", "MRN"):
+    for cat in ("SSN", "EMAIL", "DATE", "MRN", "PHONE"):
         assert r.by_category[cat].leakage_rate == 0.0, cat
     assert r.precision == 1.0
 
