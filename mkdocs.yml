@@ -37,6 +37,7 @@ nav:
       - MedDevice Mode: concepts/meddevice-mode.md
   - Adapters: adapters.md
   - Policy Reference: policy.md
+  - PHI Benchmark: phi-benchmark.md
   - Regulatory Mapping: regulatory-mapping.md
   - Tutorials:
       - LangGraph: tutorials/langgraph.md

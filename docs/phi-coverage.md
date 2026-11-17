@@ -3,7 +3,8 @@
 The 18 identifier categories of 45 CFR §164.514(b)(2), and what the firewall
 detects for each. "Deterministic" = regex/checksum on the default install;
 "NER" = requires `[phi]` (Presidio) or a cloud backend
-(`detector_backend: aws_comprehend_medical`).
+(`detector_backend: aws_comprehend_medical`) or the local LLM layer
+(`detector_backend: local_llm`).
 
 | # | HIPAA identifier | Coverage | Detector label(s) |
 |---|------------------|----------|-------------------|
@@ -40,3 +41,6 @@ mod-11 checksum, `UK_NINO`, `IBAN` with mod-97), `en_CA` (`CA_SIN` with Luhn,
 - Category 18 is unbounded by definition; every deployment should register
   detectors for its proprietary formats (see docs/api.md for the extension
   API).
+
+Measure these claims on your own labelled data with `clinicsentry phi-bench`
+([PHI Detection Benchmark](phi-benchmark.md)).

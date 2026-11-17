@@ -18,6 +18,7 @@ from clinicsentry.phi.firewall import (
     PHIScanResult,
     TokenizeResult,
 )
+from clinicsentry.phi.llm import LocalLLMDetector
 from clinicsentry.phi.locales import locale_specs, supported_locales
 from clinicsentry.phi.minimum_necessary import minimum_necessary
 from clinicsentry.phi.pipeline import (
@@ -38,6 +39,7 @@ __all__ = [
     "Detector",
     "DetectorPipeline",
     "EncodedPHIDetector",
+    "LocalLLMDetector",
     "NormalizedText",
     "PHIFinding",
     "PHIFirewall",

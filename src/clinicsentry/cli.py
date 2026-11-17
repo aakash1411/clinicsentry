@@ -284,6 +284,61 @@ def _cmd_bench(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_phi_bench(args: argparse.Namespace) -> int:
+    """Score PHI detection against a labelled dataset; exit 1 below the recall gate."""
+    from clinicsentry.benchmarks import (
+        bundled_synthetic_dataset,
+        evaluate_phi,
+        load_dataset,
+    )
+    from clinicsentry.phi.firewall import PHIFirewall
+
+    if args.dataset:
+        docs = load_dataset(args.dataset, args.format)
+        dataset_name = Path(args.dataset).name
+    else:
+        docs = bundled_synthetic_dataset()
+        dataset_name = "bundled-synthetic"
+    label_map = None
+    if args.label_map:
+        import yaml
+
+        loaded = yaml.safe_load(Path(args.label_map).read_text())
+        if not isinstance(loaded, dict):
+            print("label map must be a YAML mapping of label -> category", file=sys.stderr)
+            return 2
+        label_map = {str(k): (str(v) if v else None) for k, v in loaded.items()}
+    if args.policy:
+        from clinicsentry.guard import ClinicSentry
+
+        target: object = ClinicSentry(policy=args.policy, framework="bench").firewall
+        detector_name = f"policy:{Path(args.policy).name}"
+    elif args.detector == "presidio":
+        target = PHIFirewall(use_presidio=True)
+        detector_name = "regex+presidio"
+    elif args.detector == "local-llm":
+        target = PHIFirewall(detector_backend="local_llm")
+        detector_name = "regex+local_llm"
+    else:
+        target = PHIFirewall()
+        detector_name = "regex"
+    report = evaluate_phi(
+        target,
+        docs,
+        detector_name=detector_name,
+        dataset_name=dataset_name,
+        label_map=label_map,
+    )
+    print(json.dumps(report.to_dict(), indent=2) if args.json else report.to_markdown())
+    if args.min_recall is not None and report.span_recall < args.min_recall:
+        print(
+            f"span recall {report.span_recall:.4f} below --min-recall {args.min_recall}",
+            file=sys.stderr,
+        )
+        return 1
+    return 0
+
+
 def _nest(leaf: str, depth: int) -> object:
     """Build a nested payload for the bench command."""
     payload: object = leaf
@@ -348,6 +403,20 @@ def build_parser() -> argparse.ArgumentParser:
     p_bench = sub.add_parser("bench", help="Quick scan-latency benchmark on this machine.")
     p_bench.add_argument("--n", type=int, default=200, help="Samples per cell.")
     p_bench.set_defaults(func=_cmd_bench)
+
+    p_pb = sub.add_parser(
+        "phi-bench", help="Score PHI detection recall/leakage against a labelled dataset."
+    )
+    p_pb.add_argument(
+        "--dataset", help="JSONL file or BRAT directory (default: bundled synthetic)."
+    )
+    p_pb.add_argument("--format", choices=["jsonl", "brat"], help="Dataset format (inferred).")
+    p_pb.add_argument("--label-map", help="YAML mapping of dataset label -> HIPAA category.")
+    p_pb.add_argument("--detector", choices=["regex", "presidio", "local-llm"], default="regex")
+    p_pb.add_argument("--policy", help="Benchmark the firewall configured by this policy YAML.")
+    p_pb.add_argument("--min-recall", type=float, help="Exit 1 if span recall is below this.")
+    p_pb.add_argument("--json", action="store_true", help="Emit JSON instead of Markdown.")
+    p_pb.set_defaults(func=_cmd_phi_bench)
 
     return parser
 
