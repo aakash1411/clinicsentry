@@ -10,18 +10,24 @@ How ClinicSentry maps to the major regulatory frameworks. This is **alignment**,
 | §164.312(b) | Audit controls | `AuditChain` + linear hash-chain backend |
 | §164.312(c)(1) | Integrity | HMAC signing; `verify()` reports tampering |
 | §164.312(e)(1) | Transmission security | Adapter scans every cross-boundary message |
-| §164.502(b) | Minimum necessary | `@minimum_necessary` decorator |
+| §164.502(b) | Minimum necessary | `@minimum_necessary` decorator; `PHI_DETECTED` / `PHI_REDACTED` audit evidence |
 | §164.514(b) | De-identification methods | Four redaction modes per ADR-0015 |
 
-## FDA TPLC (2025 draft guidance)
+## FDA AI-enabled device software functions (TPLC)
 
-| Section | Requirement | ClinicSentry control |
-|---------|-------------|------------------------|
-| II.A | Intended use documentation | `MedDeviceConfig.intended_use` + report metadata |
-| II.B | Risk management | IEC 62304 class enforcement + dose ranges |
-| II.C | Monitoring | OTEL spans + Prometheus metrics |
-| II.D | Change control | `ChangeImpactAssessment` generator |
-| III.B | Real-world performance | `RegulatoryReport.session_summary` |
+Mapped to the themes of FDA's draft guidance *Artificial Intelligence-Enabled
+Device Software Functions: Lifecycle Management and Marketing Submission
+Recommendations* (January 2025, draft — non-binding) and the final PCCP
+guidance (December 2024). Bundled rule IDs (`FDA-TPLC-III-B-*`) are retained
+for compatibility and do not cite guidance section numbers.
+
+| Theme | ClinicSentry control |
+|-------|------------------------|
+| Device description / intended use | `MedDeviceConfig.intended_use` + report metadata |
+| Risk management | IEC 62304 class enforcement; runtime dose-range, rate-limit and interventional gates |
+| Performance monitoring | OTEL spans + Prometheus metrics; per-session audit chain |
+| Change control (PCCP) | `ChangeImpactAssessment` generator |
+| Real-world performance evidence | `RegulatoryReport.session_summary` |
 
 ## IEC 62304:2006 +A1:2015
 
@@ -29,7 +35,7 @@ How ClinicSentry maps to the major regulatory frameworks. This is **alignment**,
 |--------|-------------|------------------------|
 | §4.3 | Software safety classification | `SoftwareSafetyClass`, registration-time check (ADR-0006) |
 | §5.1 | Software development planning | `CHANGELOG.md`, ADRs |
-| §5.5 | Software unit verification | ≥ 85% test coverage (CI gate) |
+| §5.5 | Software unit verification | ≥ 75% test coverage (CI gate) |
 | §5.7 | Software system testing | Integration + adapter test suites |
 | §7.1 | Risk management process | Threat model + risk register |
 

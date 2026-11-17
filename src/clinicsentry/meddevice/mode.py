@@ -5,6 +5,7 @@ from __future__ import annotations
 import enum
 import hashlib
 import hmac
+import json
 import math
 import threading
 import time
@@ -12,6 +13,8 @@ from collections import deque
 from dataclasses import dataclass, field
 from typing import Any, Protocol, runtime_checkable
 
+from clinicsentry.errors import EmergencyStopActive
+from clinicsentry.meddevice.nonces import InMemoryNonceStore, NonceStore
 from clinicsentry.types import ClinicalRiskTier
 
 __all__ = [
@@ -21,7 +24,65 @@ __all__ = [
     "EmergencyStop",
     "MedDeviceMode",
     "ActionLike",
+    "arguments_hash",
+    "interventional_authorization_message",
+    "sign_interventional_authorization",
 ]
+
+
+def arguments_hash(arguments: Any) -> str:
+    """Stable SHA-256 over JSON-serialized tool arguments.
+
+    Clinician clients sign this value to bind an authorization to the exact
+    arguments of one invocation.
+    """
+    return hashlib.sha256(json.dumps(arguments, sort_keys=True, default=str).encode()).hexdigest()
+
+
+def interventional_authorization_message(
+    *,
+    action_name: str,
+    clinician_id: str,
+    session_id: str,
+    nonce: str,
+    issued_at: int,
+    args_hash: str = "",
+) -> bytes:
+    """Canonical bytes covered by a Class C HMAC authorization signature."""
+    return json.dumps(
+        {
+            "action_name": action_name,
+            "args_hash": args_hash,
+            "clinician_id": clinician_id,
+            "issued_at": int(issued_at),
+            "nonce": nonce,
+            "session_id": session_id,
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+
+
+def sign_interventional_authorization(
+    key: bytes,
+    *,
+    action_name: str,
+    clinician_id: str,
+    session_id: str,
+    nonce: str,
+    issued_at: int,
+    args_hash: str = "",
+) -> str:
+    """Client-side helper: hex HMAC-SHA256 over the canonical message."""
+    message = interventional_authorization_message(
+        action_name=action_name,
+        clinician_id=clinician_id,
+        session_id=session_id,
+        nonce=nonce,
+        issued_at=issued_at,
+        args_hash=args_hash,
+    )
+    return hmac.new(key, message, hashlib.sha256).hexdigest()
 
 
 @runtime_checkable
@@ -81,7 +142,7 @@ class MedDeviceConfig:
     strict_dose_ranges: bool = True
 
 
-class EmergencyStop(RuntimeError):
+class EmergencyStop(EmergencyStopActive, RuntimeError):
     """Raised when the kill-switch has been engaged."""
 
 
@@ -95,9 +156,14 @@ class MedDeviceMode:
     _change_times: deque[float] = field(default_factory=deque, init=False)
     _lock: threading.Lock = field(default_factory=threading.Lock, init=False, repr=False)
     iec_traceability: dict[str, str] = field(default_factory=dict, init=False)
+    nonce_store: NonceStore = field(default_factory=InMemoryNonceStore)
 
     #: Rolling rate-limit window in seconds.
     RATE_WINDOW_SECONDS = 3600.0
+    #: Maximum age of a clinician authorization signature.
+    AUTHORIZATION_MAX_AGE_SECONDS = 120
+    #: Tolerated clock skew for future-dated ``issued_at`` values.
+    AUTHORIZATION_CLOCK_SKEW_SECONDS = 30
 
     # ------------------------------------------------------------------
     # Registration-time enforcement
@@ -144,21 +210,75 @@ class MedDeviceMode:
         action_name: str,
         clinician_id: str,
         signature: str,
+        *,
+        session_id: str | None = None,
+        nonce: str | None = None,
+        issued_at: int | None = None,
+        args_hash: str = "",
     ) -> bool:
         """Verify a Class C interventional action authorization signature.
 
-        The clinician must be present in ``config.authorized_clinician_keys`` and
-        ``signature`` must be the HMAC-SHA256 of ``action_name`` under their key.
+        Returns True without checking when device mode is disabled or the
+        safety class is not C. For Class C the signature must be bound to
+        ``session_id``, a single-use ``nonce`` and a fresh ``issued_at`` (see
+        :func:`sign_interventional_authorization`); legacy signatures over the
+        bare action name are rejected because they are replayable.
         """
         if not self.config.enabled:
             return True
         if self.config.software_safety_class != SoftwareSafetyClass.C:
             return True
-        key = self.config.authorized_clinician_keys.get(clinician_id)
-        if not key:
+        if session_id is None or nonce is None or issued_at is None:
             return False
-        expected = hmac.new(key, action_name.encode(), hashlib.sha256).hexdigest()
-        return hmac.compare_digest(expected, signature)
+        return self.verify_clinician_signature(
+            action_name,
+            clinician_id,
+            signature,
+            session_id=session_id,
+            nonce=nonce,
+            issued_at=issued_at,
+            args_hash=args_hash,
+        )
+
+    def verify_clinician_signature(
+        self,
+        action_name: str,
+        clinician_id: str,
+        signature: str,
+        *,
+        session_id: str,
+        nonce: str,
+        issued_at: int,
+        args_hash: str = "",
+    ) -> bool:
+        """Verify a bound, fresh, single-use clinician HMAC signature.
+
+        Unlike :meth:`authorize_interventional` this never short-circuits on
+        device-mode configuration. A successfully verified nonce is consumed;
+        presenting it again returns False.
+        """
+        key = self.config.authorized_clinician_keys.get(clinician_id)
+        if not key or not nonce:
+            return False
+        now = time.time()
+        age = now - issued_at
+        if age > self.AUTHORIZATION_MAX_AGE_SECONDS or age < -self.AUTHORIZATION_CLOCK_SKEW_SECONDS:
+            return False
+        expected = sign_interventional_authorization(
+            key,
+            action_name=action_name,
+            clinician_id=clinician_id,
+            session_id=session_id,
+            nonce=nonce,
+            issued_at=issued_at,
+            args_hash=args_hash,
+        )
+        if not hmac.compare_digest(expected, signature):
+            return False
+        expires_at = (
+            issued_at + self.AUTHORIZATION_MAX_AGE_SECONDS + self.AUTHORIZATION_CLOCK_SKEW_SECONDS
+        )
+        return self.nonce_store.add(f"{session_id}:{nonce}", expires_at)
 
     def validate_dose(self, parameter: str, value: float) -> bool:
         """Validate a device parameter modification against configured ranges.

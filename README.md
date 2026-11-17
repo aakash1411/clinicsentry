@@ -25,7 +25,7 @@ your existing agent code.
 | Module | What it does | Regulatory alignment |
 |--------|-------------|---------------------|
 | **PHI Firewall** | Detect, redact, and track PHI across agents | HIPAA §164.502(b), §164.312 |
-| **Clinical Escalation Router** | Risk-tier actions; route uncertain decisions to humans | IEC 62304 §9, FDA TPLC §III.B |
+| **Clinical Escalation Router** | Risk-tier actions; route uncertain decisions to humans | IEC 62304 §9, EU AI Act Art. 14 |
 | **Regulatory Audit Trail** | Tamper-evident HMAC-signed hash chain of every event | 21 CFR Part 11, HIPAA §164.312(b) |
 | **MedDevice Mode** | IEC 62304 Class A/B/C enforcement, dose-range checks, emergency stop | IEC 62304 §5.1/§8, EU AI Act |
 
@@ -154,7 +154,7 @@ Open <http://localhost:3000> (Grafana) or <http://localhost:9001> (MinIO).
 
 ## Status, Versioning, and Support
 
-**v0.3.0** — pre-1.0 software ([per-module status](STATUS.md)). SemVer: breaking
+**v0.5.0** — pre-1.0 software ([per-module status](STATUS.md)). SemVer: breaking
 changes only in minor releases until 1.0, always flagged in the
 [CHANGELOG](CHANGELOG.md) with migration notes. Only the latest minor release
 receives security fixes ([security policy](SECURITY.md) — PHI-detection

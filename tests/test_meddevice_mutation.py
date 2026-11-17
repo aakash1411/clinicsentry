@@ -8,8 +8,7 @@ clearing state, and ``validate_dose`` default for unknown parameters.
 
 from __future__ import annotations
 
-import hashlib
-import hmac
+import time
 from dataclasses import dataclass, field
 
 import pytest
@@ -20,6 +19,7 @@ from clinicsentry.meddevice.mode import (
     MedDeviceConfig,
     MedDeviceMode,
     SoftwareSafetyClass,
+    sign_interventional_authorization,
 )
 from clinicsentry.types import ClinicalRiskTier
 
@@ -296,8 +296,9 @@ def test_authorize_interventional_class_c_matching_signature_returns_true() -> N
             authorized_clinician_keys={"doc": key},
         )
     )
-    sig = hmac.new(key, b"act", hashlib.sha256).hexdigest()
-    assert mode.authorize_interventional("act", "doc", sig) is True
+    bound = {"session_id": "s", "nonce": "n", "issued_at": int(time.time())}
+    sig = sign_interventional_authorization(key, action_name="act", clinician_id="doc", **bound)
+    assert mode.authorize_interventional("act", "doc", sig, **bound) is True
 
 
 def test_authorize_interventional_class_c_wrong_signature_returns_false() -> None:
@@ -307,7 +308,8 @@ def test_authorize_interventional_class_c_wrong_signature_returns_false() -> Non
             authorized_clinician_keys={"doc": b"k" * 32},
         )
     )
-    assert mode.authorize_interventional("act", "doc", "0" * 64) is False
+    bound = {"session_id": "s", "nonce": "n", "issued_at": int(time.time())}
+    assert mode.authorize_interventional("act", "doc", "0" * 64, **bound) is False
 
 
 # ---------------------------------------------------------------------------

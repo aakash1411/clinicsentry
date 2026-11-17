@@ -80,8 +80,9 @@ class GoogleADKAdapter(GenericAdapter):
 
         def cb(*, tool: Any, args: dict[str, Any], tool_context: Any) -> dict[str, Any]:
             """Scan tool args; minimum-necessary applies at decoration time."""
-            adapter.guard.meddevice.assert_running()
-            scan = adapter.guard.firewall.scan(args, origin_agent=getattr(tool, "name", "tool"))
+            name = getattr(tool, "name", "tool")
+            adapter.guard.check_tool_call(name, args)
+            scan = adapter.guard.firewall.scan(args, origin_agent=name)
             return scan.redacted  # type: ignore[no-any-return]
 
         return cb

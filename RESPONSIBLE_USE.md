@@ -20,7 +20,7 @@ Do not deploy ClinicSentry in a setting where its failure could cause patient ha
 
 ## Honest Disclosures
 
-- The default detectors are **rule-based + Presidio**. False-positive and false-negative rates on real clinical text are not yet characterized on a public benchmark. Phase 4 of the roadmap addresses this.
+- The default detectors are **rule-based + Presidio**. False-positive and false-negative rates on real clinical text are not yet characterized on a public benchmark. A public PHI benchmark harness is the next planned milestone.
 - The audit chain protects against **honest-operator** integrity violations (see ADR-0014). A malicious root user can compromise any in-process state.
 - The IEC 62304 class enforcement is a **runtime check**. It does not constitute a quality management system, design history file, or risk management file.
 

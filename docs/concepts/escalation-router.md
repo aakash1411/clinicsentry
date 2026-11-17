@@ -21,6 +21,10 @@ The router consumes a composite confidence score blending four (up to eight) sig
 
 Missing signals are excluded from the weighted mean.
 
+## Recording human review
+
+`guard.record_human_review(action_name, reviewer_id=..., decision="approved"|"rejected"|"modified", rationale=...)` emits a `HUMAN_REVIEW_RESPONSE` event (rationale passes through the PHI firewall). The EU AI Act Art. 14 rule requires a later review for the same action for every advisory escalation.
+
 ## Channels
 
 Escalations are routed to one of:

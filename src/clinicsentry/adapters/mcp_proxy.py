@@ -14,9 +14,13 @@ import json
 from collections.abc import Awaitable, Callable
 
 from clinicsentry.adapters.base import GenericAdapter
+from clinicsentry.errors import ClinicSentryError
 from clinicsentry.types import AuditEvent, AuditEventType
 
-__all__ = ["MCPProxyAdapter"]
+#: JSON-RPC server-error code returned when ClinicSentry blocks a tool call.
+BLOCKED_ERROR_CODE = -32001
+
+__all__ = ["BLOCKED_ERROR_CODE", "MCPProxyAdapter"]
 
 
 class MCPProxyAdapter(GenericAdapter):
@@ -50,6 +54,19 @@ class MCPProxyAdapter(GenericAdapter):
             params = request.get("params") or {}
             tool_name = params.get("name", "tool")
             arguments = params.get("arguments") or {}
+            try:
+                action = self.guard.check_tool_call(tool_name, arguments)
+            except ClinicSentryError as exc:
+                return json.dumps(
+                    {
+                        "jsonrpc": "2.0",
+                        "id": request.get("id"),
+                        "error": {
+                            "code": BLOCKED_ERROR_CODE,
+                            "message": f"blocked by ClinicSentry ({exc.code})",
+                        },
+                    }
+                )
             scan_in = self.guard.firewall.scan(arguments, origin_agent=tool_name)
             params["arguments"] = scan_in.redacted
             request["params"] = params
@@ -60,6 +77,7 @@ class MCPProxyAdapter(GenericAdapter):
                     sequence_number=0,
                     agent_framework=self.framework_name,
                     agent_id=tool_name,
+                    risk_tier=action.tier if action else None,
                     redacted_input={"arguments": scan_in.redacted},
                     phi_tags_detected=[t.tag_id for t in scan_in.tags],
                 )

@@ -53,7 +53,7 @@ def build_report(
     agents = sorted({e.agent_id for e in events_list if e.agent_id and e.agent_id != "unknown"})
 
     phi_tags = phi_tags or {}
-    phi_types = Counter(t.phi_type for t in phi_tags.values())
+    phi_detected_count, phi_redacted_count, phi_types = _phi_counts(events_list, phi_tags)
 
     actions_taken: list[dict[str, Any]] = []
     escalations: list[dict[str, Any]] = []
@@ -119,13 +119,13 @@ def build_report(
         "agents_involved": agents,
     }
     phi_summary = {
-        "phi_detected_count": len(phi_tags),
+        "phi_detected_count": phi_detected_count,
         "phi_types_detected": dict(phi_types),
-        "phi_redacted_count": len(phi_tags),
+        "phi_redacted_count": phi_redacted_count,
+        "phi_unredacted_count": max(phi_detected_count - phi_redacted_count, 0),
         "phi_propagation_paths": [
             {"tag_id": tid, "edges": edges} for tid, edges in (propagation_edges or {}).items()
         ],
-        "minimum_necessary_enforced": True,
     }
     decision_summary = {
         "actions_taken": actions_taken,
@@ -156,6 +156,7 @@ def build_report(
         rule = by_id[result.rule_id]
         attestation[result.rule_id] = {
             "satisfied": result.satisfied,
+            "applicable": result.applicable,
             "evidence": result.evidence,
             "reason": result.reason,
             "severity": rule.severity,
@@ -171,6 +172,7 @@ def build_report(
         or not any(e.risk_tier == ClinicalRiskTier.INTERVENTIONAL for e in events_list),
         "rules_evaluated": len(rule_results),
         "rules_satisfied": sum(1 for r in rule_results if r.satisfied),
+        "rules_not_applicable": sum(1 for r in rule_results if not r.applicable),
         "rules_failed_blocker": sum(
             1 for r in rule_results if not r.satisfied and by_id[r.rule_id].severity == "blocker"
         ),
@@ -193,6 +195,30 @@ def build_report(
         recommendations=recommendations,
         iec62304_section=iec62304,
     )
+
+
+def _phi_counts(
+    events: list[AuditEvent], phi_tags: dict[str, PHITag]
+) -> tuple[int, int, Counter[str]]:
+    """PHI detected/redacted counts and types, derived from audit evidence.
+
+    Falls back to the propagation-graph tags only when the event stream holds
+    no PHI evidence (e.g. a report built from a pre-0.5 audit store).
+    """
+    detected = [e for e in events if e.event_type == AuditEventType.PHI_DETECTED]
+    if not detected:
+        return len(phi_tags), 0, Counter(t.phi_type for t in phi_tags.values())
+    types: Counter[str] = Counter()
+    detected_count = 0
+    for ev in detected:
+        types.update(ev.redacted_input.get("phi_types") or {})
+        detected_count += int(ev.redacted_input.get("count") or len(ev.phi_tags_detected) or 1)
+    redacted_count = sum(
+        int(e.redacted_input.get("count") or len(e.phi_tags_detected) or 1)
+        for e in events
+        if e.event_type == AuditEventType.PHI_REDACTED
+    )
+    return detected_count, redacted_count, types
 
 
 # ---------------------------------------------------------------------------
@@ -252,6 +278,7 @@ def report_schema() -> dict[str, Any]:
                     "required": ["satisfied", "severity"],
                     "properties": {
                         "satisfied": {"type": "boolean"},
+                        "applicable": {"type": "boolean"},
                         "severity": {"type": "string"},
                         "framework": {"type": "string"},
                         "description": {"type": "string"},
