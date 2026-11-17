@@ -155,10 +155,10 @@ omit = [
 ]
 
 [tool.coverage.report]
-# 75% on the core modules; novelty modules (propagation/confidence/chain/meddevice)
-# are individually verified by their dedicated test files. Optional / heavy-dep
-# modules are omitted (see omit list above).
-fail_under = 75
+# Ratchet: raised at every release to the floor of the measured total and never
+# lowered (CONTRIBUTING.md "Coverage policy"). Optional / heavy-dep modules are
+# omitted (see omit list above).
+fail_under = 88
 show_missing = true
 skip_covered = false
 exclude_lines = [
@@ -203,6 +203,14 @@ convention = "google"
 "tests/**" = ["D", "PT011", "S101"]
 "examples/**" = ["D"]
 "_tmp/**" = ["D"]
+
+[tool.clinicsentry.coverage_floors]
+# Per-module line+branch floors checked by scripts/check_coverage_floors.py.
+# New modules ship at >= 90%; each release lifts at least two modules below 85%.
+"src/clinicsentry/authz/*" = 90
+"src/clinicsentry/phi/minimum_necessary.py" = 90
+"src/clinicsentry/audit/backend.py" = 85
+"src/clinicsentry/escalation/channels.py" = 85
 
 [tool.mypy]
 python_version = "3.11"
