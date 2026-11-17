@@ -14,12 +14,24 @@ pytest -q
 
 ## Branching
 
-- `main` — protected, always green, deployable.
-- `feat/<short-desc>` — feature branches.
-- `fix/<short-desc>` — bug fixes.
+Git-flow:
+
+- `main` — protected; released code only. Every commit on `main` is a tagged release or a hotfix.
+- `develop` — protected integration branch; feature and bugfix PRs target it.
+- `feature/<short-desc>` — new features, branched from `develop`.
+- `bugfix/<short-desc>` — non-urgent fixes, branched from `develop`.
+- `release/vX.Y.Z` — release preparation (version bump, CHANGELOG date), branched from `develop`, merged into `main`.
+- `hotfix/<short-desc>` — urgent fixes, branched from `main`, merged into `main` and `develop`.
 - `docs/<short-desc>` — documentation only.
 
-`main` cannot be pushed to directly. Every change goes through a PR with at least one review.
+Commit subjects describe the change (e.g. "Add PHI detection benchmark harness"), not a roadmap phase.
+
+## Releasing
+
+1. Branch `release/vX.Y.Z` from `develop`; bump `version` in `pyproject.toml`; date the CHANGELOG section.
+2. Open a PR to `main`; merge once CI is green.
+3. Tag the merge commit `vX.Y.Z` on `main` and push the tag. `release.yml` verifies the tag matches `pyproject.toml`, builds, smoke-tests, generates and signs the SBOM, and creates the GitHub release.
+4. Merge `main` back into `develop`.
 
 ## Pull Requests
 
