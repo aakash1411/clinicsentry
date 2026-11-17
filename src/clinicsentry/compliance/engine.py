@@ -14,6 +14,11 @@ Predicate grammar:
   compare event count against the integer literal ``N``.
 
 Any other shape is rejected with ``satisfied=False, reason="unknown predicate"``.
+
+Predicates whose precondition never occurred in the session (no PHI detected,
+no interventional calls, ...) return ``applicable=False``: the rule does not
+block, but the attestation records that it was not exercised rather than
+claiming it passed on evidence.
 """
 
 from __future__ import annotations
@@ -64,12 +69,14 @@ class RuleResult:
     satisfied: bool
     evidence: list[str] = field(default_factory=list)
     reason: str = ""
+    applicable: bool = True
 
     def to_dict(self) -> dict[str, Any]:
         """Serialize for inclusion in the regulatory report attestation."""
         return {
             "rule_id": self.rule_id,
             "satisfied": self.satisfied,
+            "applicable": self.applicable,
             "evidence": list(self.evidence),
             "reason": self.reason,
         }
@@ -90,37 +97,40 @@ class RuleSet:
 
 # Each predicate accepts ``events`` plus an optional ``context`` dict carrying
 # extra arguments (secret_key, backend, session_id) and returns
-# ``(satisfied, evidence_event_ids, reason)``.
+# ``(satisfied, evidence_event_ids, reason, applicable)``.
 
-PredicateFn = Callable[
-    [list[AuditEvent], dict[str, Any]],
-    tuple[bool, list[str], str],
-]
+PredicateOutcome = tuple[bool, list[str], str, bool]
+PredicateFn = Callable[[list[AuditEvent], dict[str, Any]], PredicateOutcome]
 
 
-def _has_field(events: list[AuditEvent], field_name: str) -> tuple[bool, list[str], str]:
+def _not_applicable(reason: str) -> PredicateOutcome:
+    """Non-blocking outcome for a rule whose precondition never occurred."""
+    return True, [], reason, False
+
+
+def _has_field(events: list[AuditEvent], field_name: str) -> PredicateOutcome:
     """Check that every event has a truthy value at ``field_name``."""
     if not events:
-        return True, [], "no events to check"
+        return _not_applicable("no events to check")
     missing: list[str] = []
     for ev in events:
         value = getattr(ev, field_name, None)
         if not value or value == "unknown":
             missing.append(ev.event_id)
     if missing:
-        return False, missing, f"{len(missing)} event(s) missing {field_name}"
-    return True, [e.event_id for e in events], f"all events have {field_name}"
+        return False, missing, f"{len(missing)} event(s) missing {field_name}", True
+    return True, [e.event_id for e in events], f"all events have {field_name}", True
 
 
 def _predicate_chain_verifies(
     events: list[AuditEvent], context: dict[str, Any]
-) -> tuple[bool, list[str], str]:
+) -> PredicateOutcome:
     """Verify the audit chain hashes and HMAC signatures end-to-end."""
     secret_key = context.get("secret_key")
     if secret_key is None:
-        return False, [], "secret_key not provided"
+        return False, [], "secret_key not provided", True
     if not events:
-        return True, [], "no events to verify"
+        return _not_applicable("no events to verify")
     session_id = events[0].session_id
     # Build an in-memory backend pre-populated with the supplied events so
     # AuditChain.verify reads them in order.
@@ -132,113 +142,141 @@ def _predicate_chain_verifies(
             backend.append(ev)
     chain = AuditChain(session_id=session_id, secret_key=secret_key, backend=backend)
     ok, errors = chain.verify()
-    return ok, [e.event_id for e in events], "; ".join(errors) if errors else "chain verified"
+    return ok, [e.event_id for e in events], "; ".join(errors) if errors else "chain verified", True
 
 
 def _predicate_signature_present(
     events: list[AuditEvent], _context: dict[str, Any]
-) -> tuple[bool, list[str], str]:
+) -> PredicateOutcome:
     """Check that every event carries a non-empty signature."""
     return _has_field(events, "signature")
 
 
 def _predicate_no_gaps_in_sequence(
     events: list[AuditEvent], _context: dict[str, Any]
-) -> tuple[bool, list[str], str]:
+) -> PredicateOutcome:
     """Check that sequence numbers are a contiguous ascending run."""
     if not events:
-        return True, [], "no events to check"
+        return _not_applicable("no events to check")
     seqs = [e.sequence_number for e in events]
     expected = list(range(seqs[0], seqs[0] + len(seqs)))
     if seqs != expected:
-        return False, [e.event_id for e in events], f"sequence gap: {seqs}"
-    return True, [e.event_id for e in events], f"sequence intact ({len(seqs)} events)"
+        return False, [e.event_id for e in events], f"sequence gap: {seqs}", True
+    return True, [e.event_id for e in events], f"sequence intact ({len(seqs)} events)", True
 
 
 def _predicate_phi_redacted_when_detected(
     events: list[AuditEvent], _context: dict[str, Any]
-) -> tuple[bool, list[str], str]:
-    """For every PHI_DETECTED, require a later PHI_REDACTED in the same session."""
-    detected_seqs: list[int] = []
-    redacted_seqs: list[int] = []
-    for ev in events:
-        if ev.event_type == AuditEventType.PHI_DETECTED:
-            detected_seqs.append(ev.sequence_number)
-        elif ev.event_type == AuditEventType.PHI_REDACTED:
-            redacted_seqs.append(ev.sequence_number)
-    if not detected_seqs:
-        return True, [], "no PHI detected"
-    unmatched: list[int] = [d for d in detected_seqs if not any(r > d for r in redacted_seqs)]
+) -> PredicateOutcome:
+    """Every PHI_DETECTED needs a following PHI_REDACTED covering all findings.
+
+    Events carrying ``phi_tags_detected`` without any PHI_DETECTED event mean
+    the firewall ran without audit instrumentation; that fails rather than
+    passing vacuously.
+    """
+    detected = [e for e in events if e.event_type == AuditEventType.PHI_DETECTED]
+    redacted = [e for e in events if e.event_type == AuditEventType.PHI_REDACTED]
+    if not detected:
+        tagged = [e.event_id for e in events if e.phi_tags_detected]
+        if tagged:
+            return (
+                False,
+                tagged,
+                f"{len(tagged)} event(s) carry PHI tags but no PHI_DETECTED evidence was recorded",
+                True,
+            )
+        return _not_applicable("no PHI detected")
+    unmatched: list[AuditEvent] = []
+    for det in detected:
+        nxt = next((r for r in redacted if r.sequence_number > det.sequence_number), None)
+        if nxt is None:
+            unmatched.append(det)
+            continue
+        det_count = det.redacted_input.get("count")
+        red_count = nxt.redacted_input.get("count")
+        if isinstance(det_count, int) and isinstance(red_count, int) and red_count < det_count:
+            unmatched.append(det)
     if unmatched:
-        evidence = [
-            e.event_id
-            for e in events
-            if e.event_type == AuditEventType.PHI_DETECTED and e.sequence_number in unmatched
-        ]
-        return False, evidence, f"{len(unmatched)} PHI detection(s) without redaction"
-    evidence = [
-        e.event_id
-        for e in events
-        if e.event_type in {AuditEventType.PHI_DETECTED, AuditEventType.PHI_REDACTED}
-    ]
-    return True, evidence, "every PHI detection has matching redaction"
+        return (
+            False,
+            [e.event_id for e in unmatched],
+            f"{len(unmatched)} PHI detection(s) without full redaction",
+            True,
+        )
+    evidence = [e.event_id for e in detected + redacted]
+    return True, evidence, "every PHI detection has matching redaction", True
 
 
 def _predicate_escalation_for_interventional(
     events: list[AuditEvent], _context: dict[str, Any]
-) -> tuple[bool, list[str], str]:
-    """Every interventional tool call must trigger an escalation."""
-    interventional_calls = [
+) -> PredicateOutcome:
+    """Every interventional tool call must be paired with an escalation for it.
+
+    Pairing is one-to-one by ``agent_id`` (the action name), so one escalation
+    cannot cover several calls or a different action.
+    """
+    call_types = {AuditEventType.TOOL_CALL, AuditEventType.MCP_TOOL_CALL}
+    calls = [
         e
         for e in events
-        if e.event_type == AuditEventType.TOOL_CALL
-        and e.risk_tier == ClinicalRiskTier.INTERVENTIONAL
+        if e.event_type in call_types and e.risk_tier == ClinicalRiskTier.INTERVENTIONAL
     ]
-    if not interventional_calls:
-        return True, [], "no interventional tool calls"
-    escalations = [e for e in events if e.event_type == AuditEventType.ESCALATION_TRIGGERED]
-    if not escalations:
+    if not calls:
+        return _not_applicable("no interventional tool calls")
+    available = [e for e in events if e.event_type == AuditEventType.ESCALATION_TRIGGERED]
+    matched: list[AuditEvent] = []
+    unmatched: list[AuditEvent] = []
+    for call in calls:
+        esc = next((e for e in available if e.agent_id == call.agent_id), None)
+        if esc is None:
+            unmatched.append(call)
+        else:
+            available.remove(esc)
+            matched.append(esc)
+    if unmatched:
         return (
             False,
-            [e.event_id for e in interventional_calls],
-            f"{len(interventional_calls)} interventional call(s) without escalation",
+            [e.event_id for e in unmatched],
+            f"{len(unmatched)} interventional call(s) without escalation",
+            True,
         )
     return (
         True,
-        [e.event_id for e in interventional_calls] + [e.event_id for e in escalations],
+        [e.event_id for e in calls] + [e.event_id for e in matched],
         "interventional calls escalated",
+        True,
     )
 
 
 def _predicate_session_has_start_and_end(
     events: list[AuditEvent], _context: dict[str, Any]
-) -> tuple[bool, list[str], str]:
+) -> PredicateOutcome:
     """Check that the session contains SESSION_START and SESSION_END events."""
     start = next((e for e in events if e.event_type == AuditEventType.SESSION_START), None)
     end = next((e for e in events if e.event_type == AuditEventType.SESSION_END), None)
     if start and end:
-        return True, [start.event_id, end.event_id], "session bounded"
+        return True, [start.event_id, end.event_id], "session bounded", True
     missing = []
     if not start:
         missing.append("SESSION_START")
     if not end:
         missing.append("SESSION_END")
-    return False, [], f"missing {', '.join(missing)}"
+    return False, [], f"missing {', '.join(missing)}", True
 
 
 def _predicate_iec62304_traceability_present(
     events: list[AuditEvent], context: dict[str, Any]
-) -> tuple[bool, list[str], str]:
+) -> PredicateOutcome:
     """Check that the iec62304 metadata section was supplied to the report."""
     if context.get("iec62304_present"):
-        return True, [], "iec62304 metadata captured"
-    return False, [], "iec62304 metadata absent"
+        return True, [], "iec62304 metadata captured", True
+    return False, [], "iec62304 metadata absent", True
 
 
 def _predicate_human_review_for_advisory(
     events: list[AuditEvent], _context: dict[str, Any]
-) -> tuple[bool, list[str], str]:
-    """Every ADVISORY-tier escalation needs a follow-up HUMAN_REVIEW_RESPONSE."""
+) -> PredicateOutcome:
+    """Every ADVISORY escalation needs a later HUMAN_REVIEW_RESPONSE for that action."""
     advisory_escalations = [
         e
         for e in events
@@ -246,19 +284,22 @@ def _predicate_human_review_for_advisory(
         and e.risk_tier == ClinicalRiskTier.ADVISORY
     ]
     if not advisory_escalations:
-        return True, [], "no advisory escalations"
+        return _not_applicable("no advisory escalations")
     reviews = [e for e in events if e.event_type == AuditEventType.HUMAN_REVIEW_RESPONSE]
     unmatched = [
         e.event_id
         for e in advisory_escalations
-        if not any(r.sequence_number > e.sequence_number for r in reviews)
+        if not any(
+            r.sequence_number > e.sequence_number and r.agent_id == e.agent_id for r in reviews
+        )
     ]
     if unmatched:
-        return False, unmatched, f"{len(unmatched)} advisory escalation(s) without review"
+        return False, unmatched, f"{len(unmatched)} advisory escalation(s) without review", True
     return (
         True,
         [e.event_id for e in advisory_escalations] + [r.event_id for r in reviews],
         "all advisory escalations reviewed",
+        True,
     )
 
 
@@ -291,12 +332,12 @@ _COMPARATORS: dict[type[ast.cmpop], Callable[[int, int], bool]] = {
 
 def _evaluate_predicate(
     predicate: str, events: list[AuditEvent], context: dict[str, Any]
-) -> tuple[bool, list[str], str]:
+) -> PredicateOutcome:
     """Parse and dispatch a predicate string. Pure — no side effects, no eval."""
     try:
         tree = ast.parse(predicate.strip(), mode="eval")
     except SyntaxError:
-        return False, [], f"predicate parse error: {predicate!r}"
+        return False, [], f"predicate parse error: {predicate!r}", True
 
     node = tree.body
 
@@ -304,7 +345,7 @@ def _evaluate_predicate(
     if isinstance(node, ast.Name):
         fn = PREDICATE_REGISTRY.get(node.id)
         if fn is None:
-            return False, [], f"unknown predicate: {node.id!r}"
+            return False, [], f"unknown predicate: {node.id!r}", True
         return fn(events, context)
 
     # ``every_event.has(<field>)``
@@ -332,14 +373,14 @@ def _evaluate_predicate(
         op = type(node.ops[0])
         comparator = _COMPARATORS.get(op)
         if comparator is None:
-            return False, [], f"unsupported comparator: {op.__name__}"
+            return False, [], f"unsupported comparator: {op.__name__}", True
         threshold = int(node.comparators[0].value)
         actual = len(events)
         ok = comparator(actual, threshold)
         reason = f"event_count={actual} vs threshold={threshold}"
-        return ok, [e.event_id for e in events], reason
+        return ok, [e.event_id for e in events], reason, True
 
-    return False, [], f"unsupported predicate shape: {predicate!r}"
+    return False, [], f"unsupported predicate shape: {predicate!r}", True
 
 
 # ---------------------------------------------------------------------------
@@ -377,13 +418,16 @@ def evaluate_rules(
     }
     results: list[RuleResult] = []
     for rule in rules:
-        satisfied, evidence, reason = _evaluate_predicate(rule.predicate, events_list, context)
+        satisfied, evidence, reason, applicable = _evaluate_predicate(
+            rule.predicate, events_list, context
+        )
         results.append(
             RuleResult(
                 rule_id=rule.id,
                 satisfied=satisfied,
                 evidence=evidence,
                 reason=reason,
+                applicable=applicable,
             )
         )
     return results

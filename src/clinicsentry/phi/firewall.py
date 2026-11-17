@@ -58,6 +58,7 @@ __all__ = [
     "PHIFirewall",
     "TokenizeResult",
     "MetricHook",
+    "ScanHook",
 ]
 
 # Payloads nested deeper than this are redacted wholesale rather than walked —
@@ -66,6 +67,9 @@ __all__ = [
 DEFAULT_MAX_SCAN_DEPTH = 64
 
 MetricHook = Callable[[str, float, dict[str, str]], None]
+#: ``(findings, tags, origin_agent)`` — called after every scan/tokenize that
+#: detected PHI. Exceptions propagate: an audit sink failure must fail closed.
+ScanHook = Callable[[list["PHIFinding"], list[PHITag], str], None]
 
 _ALLOW_NORM = re.compile(r"[^a-z0-9]")
 
@@ -166,6 +170,7 @@ class PHIFirewall:
         always_redact_fields: Sequence[str] = (),
         detector_backend: str | None = None,
         on_metric: MetricHook | None = None,
+        on_scan: ScanHook | None = None,
     ) -> None:
         """Construct a firewall instance.
 
@@ -187,6 +192,8 @@ class PHIFirewall:
             always_redact_fields: dotted field-path globs redacted wholesale.
             detector_backend: optional cloud NER backend name.
             on_metric: callback ``(name, value, tags)`` for counters/timers.
+            on_scan: callback ``(findings, tags, origin_agent)`` invoked when a
+                scan detects PHI (used by the guard to emit audit events).
         """
         if max_depth < 1:
             raise ValueError("max_depth must be >= 1")
@@ -196,6 +203,7 @@ class PHIFirewall:
         self.decode_encoded = decode_encoded
         self.max_depth = max_depth
         self.on_metric = on_metric
+        self.on_scan = on_scan
         self._skip_fields = list(skip_fields)
         self._always_redact_fields = list(always_redact_fields)
         self._allowlist: dict[str, set[str]] = {
@@ -236,6 +244,7 @@ class PHIFirewall:
         self._metric("clinicsentry.scan.latency_ms", (time.perf_counter() - started) * 1000.0, {})
         for f in result.findings:
             self._metric("clinicsentry.phi.redactions", 1.0, {"type": f.phi_type})
+        self._notify_scan(result.findings, result.tags, origin_agent)
         return result
 
     async def ascan(self, payload: Any, *, origin_agent: str = "unknown") -> PHIScanResult:
@@ -276,6 +285,7 @@ class PHIFirewall:
             return token
 
         result = self._scan(payload, origin_agent=origin_agent, depth=0, path="", replacer=replacer)
+        self._notify_scan(result.findings, result.tags, origin_agent)
         return TokenizeResult(redacted=result.redacted, mapping=mapping, findings=result.findings)
 
     def stream_redactor(
@@ -636,6 +646,12 @@ class PHIFirewall:
     # ------------------------------------------------------------------
     # Helpers
     # ------------------------------------------------------------------
+
+    def _notify_scan(
+        self, findings: list[PHIFinding], tags: list[PHITag], origin_agent: str
+    ) -> None:
+        if self.on_scan is not None and (findings or tags):
+            self.on_scan(findings, tags, origin_agent)
 
     def _metric(self, name: str, value: float, metric_tags: dict[str, str]) -> None:
         if self.on_metric is None:

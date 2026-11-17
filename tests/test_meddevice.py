@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import time
 
 import pytest
 
@@ -14,6 +15,7 @@ from clinicsentry.meddevice.mode import (
     MedDeviceConfig,
     MedDeviceMode,
     SoftwareSafetyClass,
+    sign_interventional_authorization,
 )
 from clinicsentry.types import ClinicalRiskTier
 
@@ -43,10 +45,19 @@ def test_class_c_authorization_signature() -> None:
             authorized_clinician_keys={"dr_smith": key},
         )
     )
-    sig = hmac.new(key, b"set_basal", hashlib.sha256).hexdigest()
-    assert mode.authorize_interventional("set_basal", "dr_smith", sig)
-    assert not mode.authorize_interventional("set_basal", "dr_smith", "bad")
-    assert not mode.authorize_interventional("set_basal", "unknown", sig)
+    now = int(time.time())
+    bound = {"session_id": "s1", "nonce": "n1", "issued_at": now}
+    sig = sign_interventional_authorization(
+        key, action_name="set_basal", clinician_id="dr_smith", **bound
+    )
+    assert not mode.authorize_interventional("set_basal", "dr_smith", "bad", **bound)
+    assert not mode.authorize_interventional("set_basal", "unknown", sig, **bound)
+    assert mode.authorize_interventional("set_basal", "dr_smith", sig, **bound)
+    # Single use: the same signature/nonce cannot be replayed.
+    assert not mode.authorize_interventional("set_basal", "dr_smith", sig, **bound)
+    # Legacy unbound signature over the bare action name is rejected.
+    legacy = hmac.new(key, b"set_basal", hashlib.sha256).hexdigest()
+    assert not mode.authorize_interventional("set_basal", "dr_smith", legacy)
 
 
 def test_dose_range_validation() -> None:

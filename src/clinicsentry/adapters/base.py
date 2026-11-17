@@ -102,8 +102,12 @@ class GenericAdapter(AgentFrameworkAdapter):
     async def intercept_tool_call(
         self, tool_name: str, arguments: dict[str, Any]
     ) -> dict[str, Any]:
-        """Scan tool args; minimum-necessary is applied at decoration time."""
-        self.guard.meddevice.assert_running()
+        """Enforce runtime controls, then scan and audit tool args.
+
+        Raises (via :meth:`ClinicSentry.check_tool_call`) when the call is
+        blocked; minimum-necessary is applied at decoration time.
+        """
+        action = self.guard.check_tool_call(tool_name, arguments)
         scan = self.guard.firewall.scan(arguments, origin_agent=tool_name)
         self.guard.emit_event(
             AuditEvent(
@@ -112,6 +116,7 @@ class GenericAdapter(AgentFrameworkAdapter):
                 sequence_number=0,
                 agent_framework=self.framework_name,
                 agent_id=tool_name,
+                risk_tier=action.tier if action else None,
                 input_hash=_hash(arguments),
                 redacted_input={"tool_name": tool_name, "arguments": scan.redacted},
                 phi_tags_detected=[t.tag_id for t in scan.tags],

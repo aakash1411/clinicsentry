@@ -11,7 +11,7 @@ This document enumerates threats *within the scope defined by ADR-0014*. Threats
 | T-05 | Confidence signals | LLM gaming self-reported confidence string | Spoofing | Self-reported is one of 4–8 signals, weighted; alone never decisive | Medium — research opportunity |
 | T-06 | Drug-name vocabulary | Stale vocabulary makes hallucination signal underdetect | Spoofing | Vocabulary is a pluggable `KeyProvider`-style protocol; can be refreshed | Medium |
 | T-07 | Tool args | Prompt injection drives a tool with unsafe args | Elevation of Privilege | `@minimum_necessary` strips disallowed fields; meddevice dose-range check | Low |
-| T-08 | Class B/C autonomous action | Replay clinician auth token across sessions | Spoofing, Repudiation | Token includes session id + nonce; validator rejects replay | Very Low |
+| T-08 | Class B/C autonomous action | Replay clinician auth token across sessions | Spoofing, Repudiation | HMAC and Ed25519 approvals are bound to session id, action, optional argument hash, `issued_at` (max age + clock-skew check) and a single-use nonce (pluggable `NonceStore`); approvals are consumed by one call | Low (process-local nonce store unless a shared store is supplied) |
 | T-09 | Class B/C autonomous action | Steal clinician signing key | Elevation of Privilege | Recommend HSM-held keys; `RESPONSIBLE_USE.md` warns on software keys | Out of scope without HSM |
 | T-10 | PHI in error / log lines | Stack trace leaks PHI captured locally | Information Disclosure | ADR-0008: exceptions are PHI-free by construction; CI lints message templates | Low |
 | T-11 | Detector pipeline | Adversarial unicode (homoglyph) bypass | Information Disclosure | `AdversarialNormalizer` precedes regex; multilingual detector covers es/fr/zh | Medium |

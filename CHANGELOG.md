@@ -4,6 +4,60 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-11-16
+
+Evidence-integrity release: compliance attestations now reflect controls that
+actually ran instead of passing vacuously.
+
+### Added
+
+- `PHI_DETECTED` / `PHI_REDACTED` audit events for every guard-owned scan and
+  tokenization (PHI types and counts only, never values) via the new
+  `PHIFirewall(on_scan=...)` hook.
+- `ClinicSentry.check_tool_call()`: runtime enforcement run by all adapters
+  (generic, MCP proxy, Google ADK) before a tool executes — emergency stop,
+  dose ranges, rate limit and the interventional gate.
+- `ClinicSentry.approve_interventional()` (HMAC) and
+  `approve_interventional_token()` (Ed25519): single-use clinician approvals
+  bound to session, action, `issued_at`, nonce and optionally the arguments.
+  Helpers `sign_interventional_authorization`, `arguments_hash`.
+- `ClinicSentry.record_human_review()` emitting `HUMAN_REVIEW_RESPONSE`.
+- `NonceStore` protocol + `InMemoryNonceStore` for replay protection.
+- `RuleResult.applicable` and `applicable` in report attestations;
+  `_summary.rules_not_applicable`.
+- MCP proxy returns a JSON-RPC error (`BLOCKED_ERROR_CODE = -32001`) for
+  blocked `tools/call` requests without forwarding them.
+
+### Changed (breaking)
+
+- Registered `INTERVENTIONAL` tools invoked through an adapter now raise
+  `EscalationRaised` unless a clinician approval is pending.
+- With MedDevice mode enabled, tool arguments violating declared dose ranges
+  raise `DoseOutOfRange`.
+- `MedDeviceMode.authorize_interventional()` (Class C) requires
+  `session_id`, `nonce` and `issued_at`; signatures over the bare action name
+  are rejected and verified nonces cannot be reused.
+- `ClinicianAuthValidator` rejects tokens dated > `clock_skew_seconds` in the
+  future and accepts `expected_session_id` / `expected_action` /
+  `expected_args_hash`. `_seen_nonces` replaced by `nonce_store`.
+- `TOOL_CALL` / `MCP_TOOL_CALL` events carry the registered action's
+  `risk_tier`.
+- Compliance predicates: interventional calls are paired one-to-one with
+  escalations for the same action; advisory reviews must be for the same
+  action; PHI redaction must cover all detections, and PHI tags without
+  `PHI_DETECTED` evidence fail. Rules whose precondition never occurred are
+  reported `applicable: false`.
+- Report `phi_handling_summary` counts come from audit events;
+  `minimum_necessary_enforced` (previously hard-coded `true`) is removed and
+  `phi_unredacted_count` added.
+- `EmergencyStop` now also subclasses `EmergencyStopActive`
+  (`ClinicSentryError`).
+
+### Fixed
+
+- Documentation drift: README version, coverage-gate claim, FDA guidance
+  citations, threat-model T-08 mitigation.
+
 ## [0.4.0] — 2026-06-16
 
 PHI-firewall extensibility release, driven by adopter feedback from a
