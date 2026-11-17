@@ -75,9 +75,11 @@ _CORE_SPECS: list[PatternSpec] = [
         re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"),
         0.99,
     ),
+    # Leading lookbehind instead of ``\b``: a word boundary never sits before
+    # ``(`` or ``+`` after a space, which left those characters unredacted.
     PatternSpec(
         "PHONE",
-        re.compile(r"\b(?:\+?1[-.\s]?)?\(?[2-9]\d{2}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b"),
+        re.compile(r"(?<!\w)(?:\+?1[-.\s]?)?\(?[2-9]\d{2}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b"),
         0.95,
     ),
     PatternSpec(

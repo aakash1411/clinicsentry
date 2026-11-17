@@ -156,7 +156,7 @@ Open <http://localhost:3000> (Grafana) or <http://localhost:9001> (MinIO).
 
 ## Status, Versioning, and Support
 
-**v0.6.0** — pre-1.0 software ([per-module status](STATUS.md)). SemVer: breaking
+**v0.6.1** — pre-1.0 software ([per-module status](STATUS.md)). SemVer: breaking
 changes only in minor releases until 1.0, always flagged in the
 [CHANGELOG](CHANGELOG.md) with migration notes. Only the latest minor release
 receives security fixes ([security policy](SECURITY.md) — PHI-detection

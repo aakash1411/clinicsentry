@@ -11,6 +11,8 @@ import base64
 import urllib.parse
 
 import pytest
+from hypothesis import given, settings
+from hypothesis import strategies as st
 
 from clinicsentry.phi.adversarial import (
     AdversarialDetector,
@@ -296,5 +298,81 @@ def test_firewall_redaction_spans_cover_invisibles(firewall: PHIFirewall) -> Non
     redacted = str(result.redacted)
     assert "123" not in redacted.replace("​", "")
     assert "789" not in redacted.replace("​", "")
+    assert redacted.startswith("id ")
+    assert redacted.endswith(" end")
+
+
+# ---------------------------------------------------------------------------
+# Every Unicode format (Cf) character is stripped in detection space, not just
+# the zero-width set: soft hyphen, bidi controls, invisible operators and tag
+# characters previously split identifiers past the regex stage.
+# ---------------------------------------------------------------------------
+
+_CF_SAMPLES = {
+    "soft_hyphen": "\u00ad",
+    "lrm": "\u200e",
+    "rlm": "\u200f",
+    "rlo": "\u202e",
+    "lri": "\u2066",
+    "invisible_times": "\u2062",
+    "invisible_separator": "\u2063",
+    "arabic_letter_mark": "\u061c",
+    "mongolian_vowel_separator": "\u180e",
+    "tag_latin_a": "\U000e0041",
+}
+
+
+@pytest.mark.parametrize("ch", list(_CF_SAMPLES.values()), ids=list(_CF_SAMPLES))
+def test_firewall_redacts_ssn_split_by_format_char(firewall: PHIFirewall, ch: str) -> None:
+    result = firewall.scan(f"SSN 123-45{ch}-6789 end", origin_agent="t")
+    redacted = str(result.redacted)
+    assert "6789" not in redacted
+    assert "123" not in redacted
+    assert redacted.endswith(" end")
+    assert any(t.phi_type == "SSN" for t in result.tags)
+
+
+@pytest.mark.parametrize("ch", list(_CF_SAMPLES.values()), ids=list(_CF_SAMPLES))
+def test_firewall_redacts_email_split_by_format_char(firewall: PHIFirewall, ch: str) -> None:
+    result = firewall.scan(f"mail jo{ch}hn.doe@example.com now", origin_agent="t")
+    redacted = str(result.redacted)
+    assert "jo" not in redacted.replace("now", "")
+    assert "example.com" not in redacted
+    assert any(t.phi_type == "EMAIL" for t in result.tags)
+
+
+def test_normalizer_strips_every_format_char() -> None:
+    import sys
+    import unicodedata
+
+    cf = [chr(c) for c in range(sys.maxunicode + 1) if unicodedata.category(chr(c)) == "Cf"]
+    assert AdversarialNormalizer().normalize("a" + "".join(cf) + "b") == "ab"
+
+
+def test_normalizer_keeps_visible_emoji_characters() -> None:
+    family = "\U0001f468\u200d\U0001f469\u200d\U0001f467"
+    assert AdversarialNormalizer().normalize(family) == "\U0001f468\U0001f469\U0001f467"
+
+
+def test_firewall_leaves_emoji_zwj_sequence_intact(firewall: PHIFirewall) -> None:
+    text = "family \U0001f468\u200d\U0001f469\u200d\U0001f467 visit"
+    assert firewall.scan(text, origin_agent="t").redacted == text
+
+
+_CF_CHARS = st.sampled_from(sorted(set(_CF_SAMPLES.values()) | {"\u200b", "\ufeff", "\u2060"}))
+
+
+@settings(max_examples=200, deadline=None)
+@given(data=st.data())
+def test_property_cf_insertion_never_leaks_ssn_digits(data: st.DataObject) -> None:
+    ssn = "123-45-6789"
+    out = []
+    for c in ssn:
+        out.append(c)
+        out.extend(data.draw(st.lists(_CF_CHARS, max_size=3)))
+    text = "id " + "".join(out) + " end"
+    redacted = str(PHIFirewall().scan(text, origin_agent="t").redacted)
+    visible = "".join(c for c in redacted if c.isdigit())
+    assert visible == ""
     assert redacted.startswith("id ")
     assert redacted.endswith(" end")

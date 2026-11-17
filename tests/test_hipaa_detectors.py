@@ -110,3 +110,23 @@ def test_regex_detector_default_specs_unchanged_for_core_types() -> None:
     det = RegexDetector()
     hits = det.detect("SSN 123-45-6789 email jane@example.com")
     assert {h.phi_type for h in hits} == {"SSN", "EMAIL"}
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "Contact: (304) 892-8935, ok",
+        "Call +1 304-892-8935 now",
+        "Call +1 (304) 892-8935 now",
+        "tel:(304)892-8935",
+    ],
+)
+def test_phone_prefix_punctuation_is_redacted(fw: PHIFirewall, text: str) -> None:
+    redacted = str(fw.scan(text, origin_agent="t").redacted)
+    assert "[REDACTED:PHONE]" in redacted
+    assert "(" not in redacted
+    assert "+" not in redacted
+
+
+def test_phone_not_matched_inside_longer_digit_run(fw: PHIFirewall) -> None:
+    assert fw.scan("ref 12304-892-8935", origin_agent="t").redacted == "ref 12304-892-8935"

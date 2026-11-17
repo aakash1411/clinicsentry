@@ -54,8 +54,16 @@ _HOMOGLYPHS: dict[str, str] = {
     "𝟫": "9",
 }
 
-# Zero-width and other invisible characters.
-_INVISIBLES = {"\u200b", "\u200c", "\u200d", "\ufeff", "\u2060"}
+
+def _is_format_char(ch: str) -> bool:
+    """True for Unicode format characters (category ``Cf``).
+
+    Covers zero-width characters, soft hyphen, bidi controls, invisible
+    operators and tag characters; all render invisibly and can split an
+    identifier without changing how it looks.
+    """
+    return unicodedata.category(ch) == "Cf"
+
 
 _HEX_DIGITS = set("0123456789abcdefABCDEF")
 
@@ -97,7 +105,7 @@ def _percent_decode_char(text: str, i: int) -> str | None:
 def normalize_with_map(text: str, *, percent_decode: bool = True) -> NormalizedText:
     """Normalize adversarial input while recording original character spans.
 
-    Stages (single pass): strip invisibles, map homoglyphs, NFKC-normalize each
+    Stages (single pass): strip Unicode format (``Cf``) characters, map homoglyphs, NFKC-normalize each
     character, and (optionally) decode printable ``%XX`` percent-escapes.
     """
     out: list[str] = []
@@ -106,7 +114,7 @@ def normalize_with_map(text: str, *, percent_decode: bool = True) -> NormalizedT
     n = len(text)
     while i < n:
         ch = text[i]
-        if ch in _INVISIBLES:
+        if _is_format_char(ch):
             i += 1
             continue
         if percent_decode and ch == "%":
